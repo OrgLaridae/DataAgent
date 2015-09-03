@@ -17,6 +17,7 @@ public class DataBridgeClient {
         DataPublisher dataPublisher = null;
         String streamId1 = null;
         try {
+
             KeyStoreUtils.setTrustStoreParams();
             dataPublisher = new DataPublisher("tcp://localhost:7611", "admin", "admin");
             streamId1 = dataPublisher.defineStream("{" +
