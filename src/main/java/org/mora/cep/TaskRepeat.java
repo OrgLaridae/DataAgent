@@ -29,7 +29,7 @@ public class TaskRepeat extends TimerTask {
 
     public void FetchData(String streamID, DataPublisher dataPublisher) {
         try {
-            URL url = new URL("http://api.openweathermap.org/data/2.5/weather?lat=35&lon=139");
+            URL url = new URL("http://api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=1f82d8351be4f003df99645fb416897f");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
