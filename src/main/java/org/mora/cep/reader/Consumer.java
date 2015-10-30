@@ -35,17 +35,19 @@ public class Consumer {
 
         // for a message to arrive on the queue.
 
-        Message message = consumer.receive();
-        // There are many types of Message and TextMessage
-        // is just one of them. Producer sent us a TextMessage
-        // so we must cast to it to get access to its .getText()
-        // method.
+        while(true){
+            Message message = consumer.receive();
+            // There are many types of Message and TextMessage
+            // is just one of them. Producer sent us a TextMessage
+            // so we must cast to it to get access to its .getText()
+            // method.
 
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
-            System.out.println("Received message '" + textMessage.getText() + "'");
+            if (message instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) message;
+                System.out.println("Received message '" + textMessage.getText() + "'");
+                System.out.println();
+            }
         }
-
-        connection.close();
+        //connection.close();
     }
 }
