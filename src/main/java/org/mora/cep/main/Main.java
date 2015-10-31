@@ -1,6 +1,6 @@
 package org.mora.cep.main;
 
-import org.mora.cep.DataBridgeClient;
+import org.mora.cep.cepProcessing.DataBridgeClient;
 import org.mora.cep.reader.Consumer;
 
 import java.util.Timer;
