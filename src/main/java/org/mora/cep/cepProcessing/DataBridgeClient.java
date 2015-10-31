@@ -1,4 +1,4 @@
-package org.mora.cep;
+package org.mora.cep.cepProcessing;
 
 import org.mora.cep.util.KeyStoreUtils;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
@@ -12,8 +12,8 @@ import java.util.Timer;
  * Created by chamil on 9/3/15.
  */
 public class DataBridgeClient {
-    String streamId=null;
-    DataPublisher dataPublisher=null;
+    public String streamId=null;
+    public DataPublisher dataPublisher=null;
     public void SendDataToCEP(){
         try {
 

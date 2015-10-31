@@ -1,4 +1,4 @@
-package org.mora.cep;
+package org.mora.cep.cepProcessing;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,8 +15,8 @@ import java.util.TimerTask;
  * Created by ruveni on 9/4/15.
  */
 public class TaskRepeat extends TimerTask {
-    String streamID = "";
-    DataPublisher dataPublisher;
+    public String streamID = "";
+    public DataPublisher dataPublisher;
 
     TaskRepeat(String streamID, DataPublisher datPublisher) {
         this.streamID = streamID;
