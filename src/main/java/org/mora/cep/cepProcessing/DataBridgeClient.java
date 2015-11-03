@@ -33,6 +33,8 @@ public class DataBridgeClient {
                     "           {'name':'humidity','type':'DOUBLE'}," +
                     "           {'name':'windSpeed','type':'DOUBLE'}," +
                     "           {'name':'windDirection','type':'DOUBLE'}" +
+                    "           {'name':'latitude','type':'DOUBLE'}," +
+                    "           {'name':'longitude,'type':'DOUBLE'}" +
                     " ]" +
                     "}");
         } catch (AgentException e) {
