@@ -108,7 +108,7 @@ public class TaskRepeat extends TimerTask {
 //                JSONObject cloudObject = (JSONObject) parser.parse(cloudsData);
 //                String cloudsAll = cloudObject.get("all").toString();
                 System.out.println(temperature + " " + pressure + " " + humidity + " " + windSpeed + " " + windDirection+" "+latitude+" "+longitude);
-                dataPublisher.publish(streamID, new Object[]{"127.0.0.1"}, null, new Object[]{Double.parseDouble(temperature), Double.parseDouble(pressure), Double.parseDouble(humidity), Double.parseDouble(windSpeed), Double.parseDouble(windDirection)});
+                dataPublisher.publish(streamID, new Object[]{"127.0.0.1"}, null, new Object[]{Double.parseDouble(temperature), Double.parseDouble(pressure), Double.parseDouble(humidity), Double.parseDouble(latitude), Double.parseDouble(longitude)});
             }
             //String finalOutput="{\"coord\":{\"lon\":139.78,\"lat\":38.82},\"weather\":[{\"id\":803,\"main\":\"Clouds\",\"description\":\"broken clouds\",\"icon\":\"04n\"}],\"base\":\"stations\",\"main\":{\"temp\":295.54,\"pressure\":1009,\"humidity\":73,\"temp_min\":295.15,\"temp_max\":296.15},\"visibility\":10000,\"wind\":{\"speed\":2.1,\"deg\":90},\"clouds\":{\"all\":75},\"dt\":1441274400,\"sys\":{\"type\":1,\"id\":7605,\"message\":0.0113,\"country\":\"JP\",\"sunrise\":1441224678,\"sunset\":1441271321},\"id\":1863282,\"name\":\"Hamanaka\",\"cod\":200}";
         } catch (MalformedURLException e) {

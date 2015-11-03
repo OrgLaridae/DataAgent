@@ -31,8 +31,8 @@ public class DataBridgeClient {
                     "           {'name':'temperature','type':'DOUBLE'}," +
                     "           {'name':'pressure','type':'DOUBLE'}," +
                     "           {'name':'humidity','type':'DOUBLE'}," +
-                    "           {'name':'windSpeed','type':'DOUBLE'}," +
-                    "           {'name':'windDirection','type':'DOUBLE'}" +
+                    "           {'name':'latLocation','type':'DOUBLE'}," +
+                    "           {'name':'lonLocation','type':'DOUBLE'}" +
                     " ]" +
                     "}");
         } catch (AgentException e) {
