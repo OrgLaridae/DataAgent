@@ -1,6 +1,7 @@
 package org.mora.cep.main;
 
 import org.mora.cep.cepProcessing.DataBridgeClient;
+import org.mora.cep.cepProcessing.TaskRepeat;
 import org.mora.cep.reader.Consumer;
 
 import java.util.Timer;
@@ -11,6 +12,7 @@ import java.util.Timer;
 public class Main {
     public static void main(String args[]){
         DataBridgeClient dataClient=new DataBridgeClient();
+        TaskRepeat tr = new TaskRepeat(null, null);
         try{
             dataClient.SendDataToCEP();
         }catch (Exception e){
@@ -19,7 +21,7 @@ public class Main {
 
         Timer timer=new Timer();
         try{
-            timer.scheduleAtFixedRate(new Consumer(timer),10000,5000);
+            timer.scheduleAtFixedRate(new Consumer(timer, tr.level2Queue),10000,5000);
         }catch (Exception e){
             timer.cancel();
             timer.purge();

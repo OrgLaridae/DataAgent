@@ -4,9 +4,12 @@ import javax.jms.*;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.BasicConfigurator;
+import org.mora.cep.cepProcessing.Position;
+import org.mora.cep.cepProcessing.TaskRepeat;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.LinkedList;
+
+import java.util.*;
 
 /**
  * Created by ruveni on 30/10/15.
@@ -20,16 +23,19 @@ public class Consumer extends TimerTask {
     Connection connection = null;
     Session session = null;
     Timer timer=null;
+    LinkedList<Position> level2Queue;
 
-    public Consumer(Timer timer) {
+    public Consumer(Timer timer, LinkedList<Position> l2Q) {
         this.timer=timer;
+        this.level2Queue = l2Q;
+
         try {
             BasicConfigurator.configure();
             // Getting JMS connection from the server
             ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
             connection = connectionFactory.createConnection();
             connection.start();
-            // Creating session for seding messages
+            // Creating session for sending messages
             Session session = connection.createSession(false,
                     Session.AUTO_ACKNOWLEDGE);
 
@@ -55,6 +61,9 @@ public class Consumer extends TimerTask {
             Message message = consumer.receive();
             if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;
+                String msg = textMessage.getText();
+
+                level2Queue.add(getPosition(msg));
                 System.out.println("Received message '" + textMessage.getText() + "'");
                 System.out.println();
             }
@@ -67,5 +76,20 @@ public class Consumer extends TimerTask {
                 //ex.printStackTrace();
             }
         }
+    }
+
+    public Position getPosition(String recievedmsg){
+//        int idxa = recievedmsg.indexOf("latitude:") + 9;
+//        int idxb = recievedmsg.indexOf("longitude:") + 10;
+//
+//        String lat = recievedmsg.substring(idxa,4);
+//        String lon = recievedmsg.substring(idxb,4);
+//
+//        return new Position(Double.parseDouble(lat), Double.parseDouble(lon));
+        String[] arr=recievedmsg.split(",");
+        String[] latAr=arr[3].split(":");
+        String[] lonAr=arr[4].split(":");
+        System.out.println(level2Queue.size());
+        return new Position(Double.parseDouble(latAr[1]),Double.parseDouble(lonAr[1]));
     }
 }
