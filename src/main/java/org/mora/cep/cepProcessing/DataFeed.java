@@ -32,7 +32,7 @@ public class DataFeed implements Runnable {
         double beta = -32;
         Path path = Paths.get(location);
         try (Stream<String> lines = Files.lines(path)) {
-            String[] lineArray = lines.collect(Collectors.toList()).toArray(new String[0]);
+            String[] lineArray  = lines.collect(Collectors.toList()).toArray(new String[0]);
             for (int i = 0; i < lineArray.length; i++) {
                 String[] stringData = lineArray[i].split(",");
                 for (int j = 0; j < 240; j++) {
