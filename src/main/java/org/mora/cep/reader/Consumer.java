@@ -4,10 +4,6 @@ import javax.jms.*;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.BasicConfigurator;
-import org.mora.cep.cepProcessing.Position;
-import org.mora.cep.cepProcessing.TaskRepeat;
-
-import java.util.LinkedList;
 
 import java.util.*;
 
@@ -15,19 +11,20 @@ import java.util.*;
  * Created by ruveni on 30/10/15.
  */
 public class Consumer extends TimerTask {
+    double maxRow=0,maxColumn=0,minRow=240,minCol=240,rowVal=0,colVal=0;
     // URL of the JMS server
     private static String url = "tcp://localhost:61616";
     // Name of the queue we will receive messages from
-    private static String subject = "queueMap";
+    private static String subject = "RadarQueue";
     MessageConsumer consumer = null;
     Connection connection = null;
     Session session = null;
     Timer timer=null;
-    LinkedList<Position> level2Queue;
+    String[] msgArray=null,colArray=null,rowArray=null;
+    boolean initial=false;
 
-    public Consumer(Timer timer, LinkedList<Position> l2Q) {
+    public Consumer(Timer timer) {
         this.timer=timer;
-        this.level2Queue = l2Q;
 
         try {
             BasicConfigurator.configure();
@@ -63,9 +60,11 @@ public class Consumer extends TimerTask {
                 TextMessage textMessage = (TextMessage) message;
                 String msg = textMessage.getText();
 
-                level2Queue.add(getPosition(msg));
+                //level2Queue.add(getPosition(msg));
                 System.out.println("Received message '" + textMessage.getText() + "'");
                 System.out.println();
+                setBoundary(msg);
+
             }
         } catch (Exception e) {
             timer.cancel();
@@ -78,18 +77,25 @@ public class Consumer extends TimerTask {
         }
     }
 
-    public Position getPosition(String recievedmsg){
-//        int idxa = recievedmsg.indexOf("latitude:") + 9;
-//        int idxb = recievedmsg.indexOf("longitude:") + 10;
-//
-//        String lat = recievedmsg.substring(idxa,4);
-//        String lon = recievedmsg.substring(idxb,4);
-//
-//        return new Position(Double.parseDouble(lat), Double.parseDouble(lon));
-        String[] arr=recievedmsg.split(",");
-        String[] latAr=arr[3].split(":");
-        String[] lonAr=arr[4].split(":");
-        System.out.println(level2Queue.size());
-        return new Position(Double.parseDouble(latAr[1]),Double.parseDouble(lonAr[1]));
+    public void setBoundary(String msg){
+        msgArray=msg.split(",");
+        rowArray=msgArray[0].split(":");
+        colArray=msgArray[1].split(":");
+
+        rowVal=Double.parseDouble(rowArray[1]);
+        colVal=Double.parseDouble(colArray[1]);
+        if(rowVal>maxRow){
+            maxRow=rowVal;
+        }
+        if(colVal>maxColumn){
+            maxColumn=colVal;
+        }
+        if(rowVal<minRow){
+            minRow=rowVal;
+        }
+        if(colVal<minCol){
+            minCol=colVal;
+        }
+        System.out.println(minRow+" "+maxRow+" "+minCol+" "+maxColumn);
     }
 }

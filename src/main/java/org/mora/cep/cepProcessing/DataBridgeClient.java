@@ -6,33 +6,27 @@ import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
 import org.wso2.carbon.databridge.commons.exception.*;
 
 import java.net.MalformedURLException;
-import java.util.Timer;
 
 /**
  * Created by chamil on 9/3/15.
  */
 public class DataBridgeClient {
-    public String streamId=null;
-    public DataPublisher dataPublisher=null;
-    public void SendDataToCEP(){
-        try {
+    public String streamId = null;
+    public DataPublisher dataPublisher = null;
 
+    public void SendDataToCEP(int rowValue, int colValue, double zValue) {
+        try {
             KeyStoreUtils.setTrustStoreParams();
             dataPublisher = new DataPublisher("tcp://localhost:7611", "admin", "admin");
             streamId = dataPublisher.defineStream("{" +
-                    " 'name':'WeatherStream'," +
+                    " 'name':'RadarStream'," +
                     " 'version':'1.0.0'," +
-                    " 'nickName': 'Weather Data Stream'," +
-                    " 'description': 'Some Desc'," +
-                    " 'metaData':[" +
-                    "           {'name':'ipAdd','type':'STRING'}" +
-                    " ]," +
+                    " 'nickName': 'Radar Data Stream'," +
+                    " 'description': 'Laridae Radar Data Reader'," +
                     " 'payloadData':[" +
-                    "           {'name':'temperature','type':'DOUBLE'}," +
-                    "           {'name':'pressure','type':'DOUBLE'}," +
-                    "           {'name':'humidity','type':'DOUBLE'}," +
-                    "           {'name':'latLocation','type':'DOUBLE'}," +
-                    "           {'name':'lonLocation','type':'DOUBLE'}" +
+                    "           {'name':'rowValue','type':'INT'}," +
+                    "           {'name':'colValue','type':'INT'}," +
+                    "           {'name':'zValue','type':'DOUBLE'}" +
                     " ]" +
                     "}");
         } catch (AgentException e) {
@@ -53,15 +47,26 @@ public class DataBridgeClient {
 
         //In this case correlation data is null
         if (dataPublisher != null) {
-
-            //dataPublisher.publish(streamId1, new Object[]{"127.0.0.1"}, null, new Object[]{"IBM", 96.8, 300, 120.6, 70.4});
-            Timer timer = new Timer();
-            try{
-                timer.scheduleAtFixedRate(new TaskRepeat(streamId, dataPublisher), 5000, 5000);
-            }catch (Exception e){
-                timer.cancel();
-                timer.purge();
+            try {
+                dataPublisher.publish(streamId, new Object[]{"127.0.0.1"}, null, new Object[]{rowValue, colValue, zValue});
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+//            Timer timer = new Timer();
+//            try{
+//                timer.scheduleAtFixedRate(new TaskRepeat(streamId, dataPublisher), 5000, 5000);
+//            }catch (Exception e){
+//                timer.cancel();
+//                timer.purge();
+//            }
+//            Timer timer = new Timer();
+//            try{
+//                timer.scheduleAtFixedRate(new TaskRepeat(streamId, dataPublisher), 5000, 5000);
+//            }catch (Exception e){
+//                timer.cancel();
+//                timer.purge();
+//            }
         }
     }
 }
