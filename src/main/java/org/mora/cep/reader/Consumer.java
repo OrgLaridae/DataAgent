@@ -15,13 +15,12 @@ public class Consumer extends TimerTask {
     // URL of the JMS server
     private static String url = "tcp://localhost:61616";
     // Name of the queue we will receive messages from
-    private static String subject = "RadarQueue";
+    private static String subject = "BoundaryQueue";
     MessageConsumer consumer = null;
     Connection connection = null;
     Session session = null;
     Timer timer=null;
     String[] msgArray=null,colArray=null,rowArray=null;
-    boolean initial=false;
 
     public Consumer(Timer timer) {
         this.timer=timer;

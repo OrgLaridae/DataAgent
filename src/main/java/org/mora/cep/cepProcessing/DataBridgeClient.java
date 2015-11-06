@@ -19,14 +19,12 @@ public class DataBridgeClient {
             KeyStoreUtils.setTrustStoreParams();
             dataPublisher = new DataPublisher("tcp://localhost:7611", "admin", "admin");
             streamId = dataPublisher.defineStream("{" +
-                    " 'name':'RadarStream'," +
+                    " 'name':'ReflectivityStream'," +
                     " 'version':'1.0.0'," +
-                    " 'nickName': 'Radar Data Stream'," +
-                    " 'description': 'Laridae Radar Data Reader'," +
+                    " 'nickName': ''," +
+                    " 'description': ''," +
                     " 'payloadData':[" +
-                    "           {'name':'rowValue','type':'INT'}," +
-                    "           {'name':'colValue','type':'INT'}," +
-                    "           {'name':'zValue','type':'DOUBLE'}" +
+                    "           {'name':'reflexMatrix','type':'STRING'}" +
                     " ]" +
                     "}");
         } catch (AgentException e) {
