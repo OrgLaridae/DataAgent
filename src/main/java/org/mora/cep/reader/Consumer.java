@@ -15,7 +15,7 @@ public class Consumer extends TimerTask {
     // URL of the JMS server
     private static String url = "tcp://localhost:61616";
     // Name of the queue we will receive messages from
-    private static String subject = "BoundaryQueue";
+    private static String subject = "BoundaryQuery";
     MessageConsumer consumer = null;
     Connection connection = null;
     Session session = null;
@@ -58,12 +58,14 @@ public class Consumer extends TimerTask {
             if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;
                 String msg = textMessage.getText();
-
-                //level2Queue.add(getPosition(msg));
-                System.out.println("Received message '" + textMessage.getText() + "'");
+                System.out.println("Received message " + msg);
                 System.out.println();
-                setBoundary(msg);
-
+                //decodes the message
+                String[] msgArray=msg.split(",");
+                String[] filePathArray=msgArray[0].split(":");
+                String[] boundaryArray=msgArray[1].split(":");
+                //gets the file path and the boundary
+                System.out.println(filePathArray[1]+" "+boundaryArray[1]);
             }
         } catch (Exception e) {
             timer.cancel();
@@ -74,27 +76,5 @@ public class Consumer extends TimerTask {
                 //ex.printStackTrace();
             }
         }
-    }
-
-    public void setBoundary(String msg){
-        msgArray=msg.split(",");
-        rowArray=msgArray[0].split(":");
-        colArray=msgArray[1].split(":");
-
-        rowVal=Double.parseDouble(rowArray[1]);
-        colVal=Double.parseDouble(colArray[1]);
-        if(rowVal>maxRow){
-            maxRow=rowVal;
-        }
-        if(colVal>maxColumn){
-            maxColumn=colVal;
-        }
-        if(rowVal<minRow){
-            minRow=rowVal;
-        }
-        if(colVal<minCol){
-            minCol=colVal;
-        }
-        System.out.println(minRow+" "+maxRow+" "+minCol+" "+maxColumn);
     }
 }

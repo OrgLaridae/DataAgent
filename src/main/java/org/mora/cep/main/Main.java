@@ -11,8 +11,8 @@ import java.util.Timer;
  */
 public class Main {
     public static void main(String args[]) {
-        //DataBridgeClient dataClient = new DataBridgeClient();
-        DataFeed dataFeed = new DataFeed(null);
+        DataBridgeClient dataClient = new DataBridgeClient();
+        DataFeed dataFeed = new DataFeed(dataClient);
         Thread feedThread = new Thread(dataFeed);
         feedThread.start();
 

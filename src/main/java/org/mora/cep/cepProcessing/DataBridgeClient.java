@@ -14,12 +14,12 @@ public class DataBridgeClient {
     public String streamId = null;
     public DataPublisher dataPublisher = null;
 
-    public void SendDataToCEP(int rowValue, int colValue, double zValue) {
+    public void SendDataToCEP(String matrix) {
         try {
             KeyStoreUtils.setTrustStoreParams();
             dataPublisher = new DataPublisher("tcp://localhost:7611", "admin", "admin");
             streamId = dataPublisher.defineStream("{" +
-                    " 'name':'ReflectivityStream'," +
+                    " 'name':'ReflectStream'," +
                     " 'version':'1.0.0'," +
                     " 'nickName': ''," +
                     " 'description': ''," +
@@ -46,7 +46,7 @@ public class DataBridgeClient {
         //In this case correlation data is null
         if (dataPublisher != null) {
             try {
-                dataPublisher.publish(streamId, new Object[]{"127.0.0.1"}, null, new Object[]{rowValue, colValue, zValue});
+                dataPublisher.publish(streamId, null, null, new Object[]{matrix});
             } catch (Exception e) {
                 e.printStackTrace();
             }
