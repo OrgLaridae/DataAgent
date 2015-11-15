@@ -1,7 +1,5 @@
 package org.mora.cep.cepProcessing;
 
-import org.mora.cep.writer.Producer;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +35,6 @@ public class DataFeed implements Runnable {
         double alpha = 0.5;
         double beta = -32;
         Path path = Paths.get(location);
-        System.out.println("A");
         try (Stream<String> lines = Files.lines(path)) {
             String[] lineArray = lines.collect(Collectors.toList()).toArray(new String[0]);
             for (int i = 0; i < lineArray.length; i++) {
@@ -52,8 +49,6 @@ public class DataFeed implements Runnable {
                     message.append("," + Z[i][j]);
                 }
             }
-            System.out.println("B");
-            System.out.println("AAA" + message);
         } catch (IOException ex) {
 
         }

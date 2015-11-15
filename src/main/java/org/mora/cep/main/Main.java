@@ -2,6 +2,7 @@ package org.mora.cep.main;
 
 import org.mora.cep.cepProcessing.DataBridgeClient;
 import org.mora.cep.cepProcessing.DataFeed;
+import org.mora.cep.cepProcessing.MadisDataFeed;
 import org.mora.cep.reader.Consumer;
 
 import java.util.Timer;
@@ -15,6 +16,10 @@ public class Main {
         DataFeed dataFeed = new DataFeed(dataClient);
         Thread feedThread = new Thread(dataFeed);
         feedThread.start();
+
+        MadisDataFeed madisDataFeed=new MadisDataFeed();
+        Thread madisThread=new Thread(madisDataFeed);
+        madisThread.start();
 
 
 //        DataBridgeClient dataClient=new DataBridgeClient();
