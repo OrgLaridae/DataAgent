@@ -11,7 +11,7 @@ import org.wso2.siddhi.query.api.extension.annotation.SiddhiExtension;
  * Created by ruveni on 16/11/15.
  */
 
-@SiddhiExtension(namespace = "radar", function = "boundary")
+@SiddhiExtension(namespace = "file", function = "getPath")
 public class RadarFilePath extends FunctionExecutor{
     Attribute.Type returnType;
 
