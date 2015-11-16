@@ -31,6 +31,7 @@ public class DataBridgeClient {
 
         SiddhiManager siddhiManager = new SiddhiManager(siddhiConfiguration);
 
+        //stream definitions
         siddhiManager.defineStream("define stream reflectStream (reflexMatrix string )  ");
         siddhiManager.defineStream("define stream boundaryStream ( filePath string, boundary string )  ");
         String queryReference = siddhiManager.addQuery("from reflectStream select file:getPath(reflexMatrix) as filePath, radar:boundary(reflexMatrix) as boundary insert into boundaryStream ;");
