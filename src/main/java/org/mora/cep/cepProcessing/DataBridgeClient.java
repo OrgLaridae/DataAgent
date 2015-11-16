@@ -1,70 +1,55 @@
 package org.mora.cep.cepProcessing;
 
-import org.mora.cep.util.KeyStoreUtils;
-import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
-import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
-import org.wso2.carbon.databridge.commons.exception.*;
+import org.wso2.siddhi.core.SiddhiManager;
+import org.wso2.siddhi.core.config.SiddhiConfiguration;
+import org.wso2.siddhi.core.event.Event;
+import org.wso2.siddhi.core.query.output.callback.QueryCallback;
+import org.wso2.siddhi.core.stream.input.InputHandler;
+import org.wso2.siddhi.core.util.EventPrinter;
 
-import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by chamil on 9/3/15.
  */
 public class DataBridgeClient {
-    public String streamId = null;
-    public DataPublisher dataPublisher = null;
+    private SiddhiManager siddhiManager;
+    private InputHandler inputHandler;
+
+    public DataBridgeClient(){
+        siddhiManager = new SiddhiManager();
+
+        //configuration to add siddhi extension
+        List extensionClasses = new ArrayList();
+        extensionClasses.add(org.mora.cep.sidhdhiExtention.CalculateBoundary.class);
+        extensionClasses.add(org.mora.cep.sidhdhiExtention.RadarFilePath.class);
+
+        SiddhiConfiguration siddhiConfiguration = new SiddhiConfiguration();
+        siddhiConfiguration.setSiddhiExtensions(extensionClasses);
+
+        SiddhiManager siddhiManager = new SiddhiManager(siddhiConfiguration);
+
+        siddhiManager.defineStream("define stream reflectStream (reflexMatrix string )  ");
+        siddhiManager.defineStream("define stream boundaryStream ( filePath string, boundary string )  ");
+        String queryReference = siddhiManager.addQuery("from reflectStream select file:getPath(reflexMatrix) as filePath, radar:boundary(reflexMatrix) as boundary insert into boundaryStream ;");
+
+        siddhiManager.addCallback(queryReference, new QueryCallback() {
+            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+                System.out.print("Radar : ");
+                EventPrinter.print(timeStamp, inEvents, removeEvents);
+            }
+        });
+
+        inputHandler = siddhiManager.getInputHandler("reflectStream");
+    }
 
     public void SendDataToCEP(String matrix) {
         try {
-            KeyStoreUtils.setTrustStoreParams();
-            dataPublisher = new DataPublisher("tcp://localhost:7611", "admin", "admin");
-            streamId = dataPublisher.defineStream("{" +
-                    " 'name':'ReflectStream'," +
-                    " 'version':'1.0.0'," +
-                    " 'nickName': ''," +
-                    " 'description': ''," +
-                    " 'payloadData':[" +
-                    "           {'name':'reflexMatrix','type':'STRING'}" +
-                    " ]" +
-                    "}");
-        } catch (AgentException e) {
-            e.printStackTrace();
-        } catch (MalformedStreamDefinitionException e) {
-            e.printStackTrace();
-        } catch (StreamDefinitionException e) {
-            e.printStackTrace();
-        } catch (DifferentStreamDefinitionAlreadyDefinedException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-        } catch (TransportException e) {
-            e.printStackTrace();
-        }
+            inputHandler.send(new Object[]{matrix});
+        }catch (Exception e){
 
-        //In this case correlation data is null
-        if (dataPublisher != null) {
-            try {
-                dataPublisher.publish(streamId, null, null, new Object[]{matrix});
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-//            Timer timer = new Timer();
-//            try{
-//                timer.scheduleAtFixedRate(new TaskRepeat(streamId, dataPublisher), 5000, 5000);
-//            }catch (Exception e){
-//                timer.cancel();
-//                timer.purge();
-//            }
-//            Timer timer = new Timer();
-//            try{
-//                timer.scheduleAtFixedRate(new TaskRepeat(streamId, dataPublisher), 5000, 5000);
-//            }catch (Exception e){
-//                timer.cancel();
-//                timer.purge();
-//            }
         }
     }
 }

@@ -1,64 +1,41 @@
 package org.mora.cep.cepProcessing;
 
-import org.mora.cep.util.KeyStoreUtils;
-import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
-import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
-import org.wso2.carbon.databridge.commons.exception.*;
+import org.wso2.siddhi.core.SiddhiManager;
+import org.wso2.siddhi.core.event.Event;
+import org.wso2.siddhi.core.query.output.callback.QueryCallback;
+import org.wso2.siddhi.core.stream.input.InputHandler;
+import org.wso2.siddhi.core.util.EventPrinter;
 
-import java.net.MalformedURLException;
 
 /**
  * Created by ruveni on 15/11/15.
  */
 public class MadisDataBridge {
-    public String streamId = null;
-    public DataPublisher dataPublisher = null;
+    SiddhiManager siddhiManager;
+    InputHandler inputHandler;
+
+    public MadisDataBridge(){
+        siddhiManager = new SiddhiManager();
+
+        siddhiManager.defineStream("define stream WeatherStream (dewTemperature double, relativeHumidity double, seaPressure double, pressure double, temperature double, windDirection double, windSpeed double, latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream FilterStream (temperature double) ");
+        String queryReference = siddhiManager.addQuery("from  WeatherStream[ temperature >= 60] select temperature insert into FilterStream ;");
+
+        siddhiManager.addCallback(queryReference, new QueryCallback() {
+            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+                System.out.print("Madis : ");
+                EventPrinter.print(timeStamp, inEvents, removeEvents);
+            }
+        });
+
+        inputHandler = siddhiManager.getInputHandler("WeatherStream");
+    }
 
     public void SendDataToCEP(double dewTemperature, double relativeHumidity, double seaPressure, double pressure, double temperature, double windDirection, double windSpeed, double latitude, double longitude) {
         try {
-            KeyStoreUtils.setTrustStoreParams();
-            dataPublisher = new DataPublisher("tcp://localhost:7611", "admin", "admin");
-            streamId = dataPublisher.defineStream("{" +
-                    " 'name':'WeatherStream'," +
-                    " 'version':'1.0.0'," +
-                    " 'nickName': ''," +
-                    " 'description': ''," +
-                    " 'payloadData':[" +
-                    "           {'name':'dewTemperature','type':'DOUBLE'}," +
-                    "           {'name':'relativeHumidity','type':'DOUBLE'}," +
-                    "           {'name':'seaPressure','type':'DOUBLE'}," +
-                    "           {'name':'pressure','type':'DOUBLE'}," +
-                    "           {'name':'temperature','type':'DOUBLE'}," +
-                    "           {'name':'windDirection','type':'DOUBLE'}," +
-                    "           {'name':'windSpeed','type':'DOUBLE'}," +
-                    "           {'name':'latitude','type':'DOUBLE'}," +
-                    "           {'name':'longitude','type':'DOUBLE'}" +
+            inputHandler.send(new Object[]{dewTemperature,relativeHumidity,seaPressure,pressure,temperature,windDirection,windSpeed,latitude,longitude});
+        }catch (Exception e){
 
-                    " ]" +
-                    "}");
-        } catch (AgentException e) {
-            e.printStackTrace();
-        } catch (MalformedStreamDefinitionException e) {
-            e.printStackTrace();
-        } catch (StreamDefinitionException e) {
-            e.printStackTrace();
-        } catch (DifferentStreamDefinitionAlreadyDefinedException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-        } catch (TransportException e) {
-            e.printStackTrace();
-        }
-
-        //In this case correlation data is null
-        if (dataPublisher != null) {
-            try {
-                dataPublisher.publish(streamId, null, null, new Object[]{dewTemperature,relativeHumidity,seaPressure,pressure,temperature,windDirection,windSpeed,latitude,longitude});
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 }

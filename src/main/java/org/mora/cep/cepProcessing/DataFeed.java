@@ -15,9 +15,6 @@ public class DataFeed implements Runnable {
     //Producer producer=null;
     StringBuilder message=null;
     String filePath="/home/ruveni/ekxv0000.txt";
-    public DataFeed(DataBridgeClient dataClient){
-        dataBridgeClient=dataClient;
-    }
 
     @Override
     public void run() {
