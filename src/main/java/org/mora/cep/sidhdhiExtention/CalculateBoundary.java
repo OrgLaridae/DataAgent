@@ -15,15 +15,17 @@ import org.wso2.siddhi.query.api.extension.annotation.SiddhiExtension;
 @SiddhiExtension(namespace = "radar", function = "boundary")
 public class CalculateBoundary extends FunctionExecutor{
     Logger log = Logger.getLogger(CalculateBoundary.class);
-    int matrixSize = 240;
+    private static final int MATRIX_SIZE = 240;
     double[][] matrix;
     int minRow = 240, maxRow = 0, minCol = 240, maxCol = 0;
-    int threshold = 1;
+    private static final int THRESHOLD = 1;
     Attribute.Type returnType;
+    private static final double ALPHA = 0.5;
+    private static final double BETA = -32;
 
     @Override
     public void init(Attribute.Type[] types, SiddhiContext siddhiContext) {
-        matrix = new double[matrixSize][matrixSize];
+        matrix = new double[MATRIX_SIZE][MATRIX_SIZE];
         for (Attribute.Type attributeType : types) {
             if (attributeType == Attribute.Type.STRING) {
                 returnType = attributeType;
@@ -38,34 +40,36 @@ public class CalculateBoundary extends FunctionExecutor{
     protected Object process(Object o) {
         if (o instanceof Object) {
             String data = o.toString();
-            String[] zValues = data.split(",");
-            double reflectVal = 0;
+            String[] inputValues = data.split(",");
             int k = 1;
-            if (zValues.length > 1) {
-                for (int i = 0; i < matrixSize; i++) {
-                    for (int j = 0; j < matrixSize; j++) {
-                        reflectVal = Double.parseDouble(zValues[k]);
-                        if (reflectVal > threshold) {
-                            if (i > maxRow) {
-                                maxRow = i;
-                            }
-                            if (i < minRow) {
-                                minRow = i;
-                            }
-                            if (j > maxCol) {
-                                maxCol = j;
-                            }
-                            if (j < minCol) {
-                                minCol = j;
-                            }
+
+            for (int i = 0; i < MATRIX_SIZE; i++) {
+                for (int j = 0; j < MATRIX_SIZE; j++) {
+                    //converts to z values
+                    double radarData = Double.parseDouble(inputValues[k]);
+                    radarData = (radarData == 255.0) ? 0 : radarData;
+                    radarData = (ALPHA * radarData) + BETA;
+                    radarData = Math.pow(10, (radarData / 10));
+                    //calculates the boundary
+                    if (radarData > THRESHOLD) {
+                        if (i > maxRow) {
+                            maxRow = i;
                         }
-                        k++;
+                        if (i < minRow) {
+                            minRow = i;
+                        }
+                        if (j > maxCol) {
+                            maxCol = j;
+                        }
+                        if (j < minCol) {
+                            minCol = j;
+                        }
                     }
+                    k++;
                 }
             }
-
         }
-
+        //returns the boundary
         return minRow + " " + maxRow + " " + minCol + " " + maxCol;
     }
 
