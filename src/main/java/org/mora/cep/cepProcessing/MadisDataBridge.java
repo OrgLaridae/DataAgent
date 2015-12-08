@@ -15,14 +15,15 @@ import java.util.List;
  * Created by ruveni on 15/11/15.
  */
 public class MadisDataBridge {
-    SiddhiManager siddhiManager;
-    InputHandler inputHandler;
+    private SiddhiManager siddhiManager;
+    private InputHandler inputHandler;
+    private static final double THRESHOLD_TEMPERATURE=60;
 
     public MadisDataBridge(SiddhiManager siddhiManager) {
         this.siddhiManager=siddhiManager;
 
-        String anomalyRemover = siddhiManager.addQuery("from  WeatherStream[temperature >= 60] #window.unique(stationId) as A " +
-                "join WeatherStream[temperature >= 60] #window.unique(stationId) as B " +
+        String anomalyRemover = siddhiManager.addQuery("from  WeatherStream[temperature >= "+THRESHOLD_TEMPERATURE+"] #window.unique(stationId) as A " +
+                "join WeatherStream[temperature >= "+THRESHOLD_TEMPERATURE+"] #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
                 "select A.stationId,A.dateTime,A.latitude,A.longitude,A.temperature " +
                 "insert into FilterStream ;");
