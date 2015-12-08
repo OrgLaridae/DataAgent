@@ -1,5 +1,7 @@
 package org.mora.cep.cepProcessing;
 
+import org.wso2.siddhi.core.SiddhiManager;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,11 +13,16 @@ import java.util.stream.Stream;
  * Created by ruveni on 15/11/15.
  */
 public class MadisDataFeed  implements Runnable{
-    MadisDataBridge madisDataBridge;
+    private MadisDataBridge madisDataBridge;
+    private SiddhiManager siddhiManager;
+
+    public MadisDataFeed(SiddhiManager siddhiManager){
+        this.siddhiManager=siddhiManager;
+    }
 
     @Override
     public void run() {
-        madisDataBridge=new MadisDataBridge();
+        madisDataBridge=new MadisDataBridge(siddhiManager);
 
 
         Path path = Paths.get("/home/ruveni/FYP/WRF-Data/chicago.csv");
