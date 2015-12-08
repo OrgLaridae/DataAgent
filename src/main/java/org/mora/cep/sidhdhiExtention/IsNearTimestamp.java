@@ -23,7 +23,7 @@ public class IsNearTimestamp extends FunctionExecutor{
     private Date dateA,dateB;
     private long dateAMilli,dateBMilli;
     private SimpleDateFormat sdf;
-    private static final long TIME_DIFFERENCE_THRESHOLD=450;
+    private static final long TIME_DIFFERENCE_THRESHOLD=90000;
 
     @Override
     public void init(Attribute.Type[] types, SiddhiContext siddhiContext) {
