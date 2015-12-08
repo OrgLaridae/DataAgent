@@ -18,6 +18,7 @@ public class IsNearStation extends FunctionExecutor {
     Attribute.Type returnType;
     private static final double DISTANCE_THRESHOLD = 100;
     private static final double EARTH_RADIUS = 6371;//in kilometers
+    private double latA,lonA,latB,lonB,dLat,dLng,a,c,dist;
 
     @Override
     public void init(Attribute.Type[] types, SiddhiContext siddhiContext) {
@@ -35,18 +36,18 @@ public class IsNearStation extends FunctionExecutor {
     protected Object process(Object o) {
         boolean isNear = false;
         if ((o instanceof Object[]) && ((Object[]) o).length == 4) {
-            double latA=Double.parseDouble(String.valueOf(((Object[]) o)[0]));
-            double lonA=Double.parseDouble(String.valueOf(((Object[]) o)[1]));
-            double latB=Double.parseDouble(String.valueOf(((Object[]) o)[2]));
-            double lonB=Double.parseDouble(String.valueOf(((Object[]) o)[3]));
+            latA=Double.parseDouble(String.valueOf(((Object[]) o)[0]));
+            lonA=Double.parseDouble(String.valueOf(((Object[]) o)[1]));
+            latB=Double.parseDouble(String.valueOf(((Object[]) o)[2]));
+            lonB=Double.parseDouble(String.valueOf(((Object[]) o)[3]));
 
-            double dLat = Math.toRadians(latB - latA);
-            double dLng = Math.toRadians(lonB - lonA);
+            dLat = Math.toRadians(latB - latA);
+            dLng = Math.toRadians(lonB - lonA);
 
             //calculates the actual distance
-            double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(latA))* Math.cos(Math.toRadians(latB)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            double dist = (double) (EARTH_RADIUS * c)*1000;
+            a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(latA))* Math.cos(Math.toRadians(latB)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            dist = (double) (EARTH_RADIUS * c)*1000;
 
             if(dist < DISTANCE_THRESHOLD){
                 isNear=true;
