@@ -18,30 +18,15 @@ public class MadisDataBridge {
     SiddhiManager siddhiManager;
     InputHandler inputHandler;
 
-    public MadisDataBridge() {
-        SiddhiConfiguration siddhiConfiguration = new SiddhiConfiguration();
-        //configuration to add siddhi extension
-        List extensionClasses = new ArrayList();
-        extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearStation.class);
-        extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearTimestamp.class);
+    public MadisDataBridge(SiddhiManager siddhiManager) {
+        this.siddhiManager=siddhiManager;
 
-        siddhiConfiguration.setSiddhiExtensions(extensionClasses);
-
-        SiddhiManager siddhiManager = new SiddhiManager(siddhiConfiguration);
-
-        //stream definitions
-        siddhiManager.defineStream("define stream WeatherStream (stationId string, dateTime string, dewTemperature double, relativeHumidity double, seaPressure double, pressure double, temperature double, windDirection double, windSpeed double, latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double,temperature double) ");
-
-        //execution plan
-        //String queryReference = siddhiManager.addQuery("from  WeatherStream[temperature >= 60] select temperature insert into FilterStream ;");
         String anomalyRemover = siddhiManager.addQuery("from  WeatherStream[temperature >= 60] #window.unique(stationId) as A " +
                 "join WeatherStream[temperature >= 60] #window.unique(stationId) as B " +
-                "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId " +
+                "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
                 "select A.stationId,A.dateTime,A.latitude,A.longitude,A.temperature " +
                 "insert into FilterStream ;");
 
-        //and madis:isNearTimestamp(A.dateTime,B.dateTime) and A.stationId != B.stationId
         siddhiManager.addCallback(anomalyRemover, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 System.out.print("Madis : ");
