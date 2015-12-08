@@ -23,12 +23,12 @@ public class IsNearTimestamp extends FunctionExecutor{
     private Date dateA,dateB;
     private long dateAMilli,dateBMilli;
     private SimpleDateFormat sdf;
-    private static final long TIME_DIFFERENCE_THRESHOLD=90000;
+    private static final long TIME_DIFFERENCE_THRESHOLD=60;//in minutes
 
     @Override
     public void init(Attribute.Type[] types, SiddhiContext siddhiContext) {
         returnType = Attribute.Type.BOOL;
-        sdf=new SimpleDateFormat("yyyy-MM-dd kk:mm");
+        sdf=new SimpleDateFormat("dd/MM/yyyy hh:mm");
         for (Attribute.Type attributeType : types) {
             if (attributeType == Attribute.Type.STRING) {
                 break;
@@ -41,7 +41,7 @@ public class IsNearTimestamp extends FunctionExecutor{
     @Override
     protected Object process(Object o) {
         boolean isNear=false;
-        if ((o instanceof Object[]) && ((Object[]) o).length == 4) {
+        if ((o instanceof Object[]) && ((Object[]) o).length == 2) {
             //parses strings to Date type
             try {
                 dateA = sdf.parse(String.valueOf(((Object[]) o)[0]));
@@ -52,14 +52,17 @@ public class IsNearTimestamp extends FunctionExecutor{
             //converts the dates to milliseconds
             dateAMilli=dateA.getTime();
             dateBMilli=dateB.getTime();
+            long timeDif;
 
             //checks the difference is closer to the threshold value
             if(dateAMilli>dateBMilli){
-                if((dateAMilli-dateBMilli)<TIME_DIFFERENCE_THRESHOLD){
+                timeDif=dateAMilli-dateBMilli;
+                if((timeDif/(60*1000))<TIME_DIFFERENCE_THRESHOLD){
                     isNear=true;
                 }
             }else{
-                if((dateBMilli-dateAMilli)<TIME_DIFFERENCE_THRESHOLD){
+                timeDif=dateBMilli-dateAMilli;
+                if((timeDif/(60*1000))<TIME_DIFFERENCE_THRESHOLD){
                     isNear=true;
                 }
             }
