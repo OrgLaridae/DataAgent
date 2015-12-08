@@ -74,6 +74,6 @@ public class IsNearTimestamp extends FunctionExecutor{
 
     @Override
     public Attribute.Type getReturnType() {
-        return null;
+        return returnType;
     }
 }
