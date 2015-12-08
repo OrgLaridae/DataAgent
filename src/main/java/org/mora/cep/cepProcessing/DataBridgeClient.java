@@ -18,22 +18,8 @@ public class DataBridgeClient {
     private SiddhiManager siddhiManager;
     private InputHandler inputHandler;
 
-    public DataBridgeClient(){
-        siddhiManager = new SiddhiManager();
-
-        //configuration to add siddhi extension
-        List extensionClasses = new ArrayList();
-        extensionClasses.add(org.mora.cep.sidhdhiExtention.CalculateBoundary.class);
-        extensionClasses.add(org.mora.cep.sidhdhiExtention.RadarFilePath.class);
-
-        SiddhiConfiguration siddhiConfiguration = new SiddhiConfiguration();
-        siddhiConfiguration.setSiddhiExtensions(extensionClasses);
-
-        SiddhiManager siddhiManager = new SiddhiManager(siddhiConfiguration);
-
-        //stream definitions
-        siddhiManager.defineStream("define stream reflectStream (reflexMatrix string )  ");
-        siddhiManager.defineStream("define stream boundaryStream ( filePath string, boundary string )  ");
+    public DataBridgeClient(SiddhiManager siddhiManager){
+        this.siddhiManager=siddhiManager;
         String queryReference = siddhiManager.addQuery("from reflectStream select file:getPath(reflexMatrix) as filePath, radar:boundary(reflexMatrix) as boundary insert into boundaryStream ;");
 
         siddhiManager.addCallback(queryReference, new QueryCallback() {
