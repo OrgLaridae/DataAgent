@@ -1,5 +1,7 @@
 package org.mora.cep.cepProcessing;
 
+import org.wso2.siddhi.core.SiddhiManager;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,15 +13,20 @@ import java.util.stream.Stream;
  * Created by ruveni on 04/11/15.
  */
 public class DataFeed implements Runnable {
-    DataBridgeClient dataBridgeClient=null;
+    private DataBridgeClient dataBridgeClient=null;
     private StringBuilder message=null;
-    String filePath="/home/ruveni/ekxv0000.txt";
+    private String filePath="/home/ruveni/ekxv0000.txt";
+    private SiddhiManager siddhiManager;
+
+    public DataFeed(SiddhiManager siddhiManager){
+        this.siddhiManager=siddhiManager;
+    }
 
     @Override
     public void run() {
         //reads the input file and store the contents as a string
         readFile(filePath);
-        dataBridgeClient=new DataBridgeClient();
+        dataBridgeClient=new DataBridgeClient(siddhiManager);
         //pass the file content to CEP for processing
         dataBridgeClient.SendDataToCEP(message.toString());
     }
