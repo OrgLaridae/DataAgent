@@ -7,6 +7,7 @@ import org.wso2.siddhi.core.executor.function.FunctionExecutor;
 import org.wso2.siddhi.query.api.definition.Attribute;
 import org.wso2.siddhi.query.api.extension.annotation.SiddhiExtension;
 
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -19,7 +20,7 @@ public class MadisBoundry extends FunctionExecutor {
 
 
     protected Object process(double lat, double lon, String timestamp) {
-        DateTime benchMarkTime = null;
+        SimpleDateFormat benchMarkTime = null;
         double minLat=0, minLon=0,maxLat=0, maxLon =0;
         String boundry;
 
@@ -53,10 +54,11 @@ public class MadisBoundry extends FunctionExecutor {
         return null;
     }
 
-    private DateTime getTimestamp(String dateString){
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss"); // or is it HH:mm only?
-        DateTime dt = formatter.parseDateTime(string);
-        return dt;
+    private SimpleDateFormat getTimestamp(String dateString){
+       // DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss"); // or is it HH:mm only?
+        // DateTime dt = formatter.parseDateTime(string);
+        SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        return sdf;
     }
 
     @Override
