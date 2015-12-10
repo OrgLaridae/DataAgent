@@ -1,14 +1,13 @@
 package org.mora.cep.sidhdhiExtention;
 
-import org.apache.log4j.helpers.DateTimeDateFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.wso2.siddhi.core.config.SiddhiContext;
 import org.wso2.siddhi.core.executor.function.FunctionExecutor;
 import org.wso2.siddhi.query.api.definition.Attribute;
 import org.wso2.siddhi.query.api.extension.annotation.SiddhiExtension;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Created by chamil on 12/9/15.
@@ -17,10 +16,11 @@ import java.time.format.DateTimeFormatter;
 // incomplete..
 @SiddhiExtension(namespace = "madis", function = "boundary")
 public class MadisBoundry extends FunctionExecutor {
-
+    final int MINUTE_GAP = 15;
 
     protected Object process(double lat, double lon, String timestamp) {
-        SimpleDateFormat benchMarkTime = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        Date benchMarkTime = null;
         double minLat=0, minLon=0,maxLat=0, maxLon =0;
         String boundry;
 
@@ -30,7 +30,7 @@ public class MadisBoundry extends FunctionExecutor {
             minLon = maxLon = lon;
 
         }
-        else if(getTimestamp(timestamp).after(benchMarkTime.plusTime(15))){ // should change
+        else if((getTimestamp(timestamp).getTime() - benchMarkTime.getTime()) > MINUTE_GAP*60*60){ // should change
            benchMarkTime = getTimestamp(timestamp);
             boundry = minLat + " " + maxLat + " " + minLon + " " + maxLon;
             minLat = maxLat = lat;
@@ -54,11 +54,16 @@ public class MadisBoundry extends FunctionExecutor {
         return null;
     }
 
-    private SimpleDateFormat getTimestamp(String dateString){
-       // DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss"); // or is it HH:mm only?
-        // DateTime dt = formatter.parseDateTime(string);
+    private Date getTimestamp(String dateString){
+
         SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy hh:mm");
-        return sdf;
+        Date dt = null;
+        try {
+            dt = sdf.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dt;
     }
 
     @Override
