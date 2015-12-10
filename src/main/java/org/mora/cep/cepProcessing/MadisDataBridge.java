@@ -25,7 +25,7 @@ public class MadisDataBridge {
         String anomalyRemover = siddhiManager.addQuery("from  WeatherStream[temperature >= "+THRESHOLD_TEMPERATURE+"] #window.unique(stationId) as A " +
                 "join WeatherStream[temperature >= "+THRESHOLD_TEMPERATURE+"] #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
-                "select A.stationId,A.dateTime,A.latitude,A.longitude,A.temperature " +
+                "select A.stationId,A.dateTime,A.latitude,A.longitude,A.temperature,madis:boundary(A.latitude,A.longitude,A.dateTime) as boundary " +
                 "insert into FilterStream ;");
 
         siddhiManager.addCallback(anomalyRemover, new QueryCallback() {
