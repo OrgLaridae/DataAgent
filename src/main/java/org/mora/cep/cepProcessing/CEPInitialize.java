@@ -18,7 +18,7 @@ public class CEPInitialize {
         extensionClasses.add(org.mora.cep.sidhdhiExtention.RadarFilePath.class);
         extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearStation.class);
         extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearTimestamp.class);
-
+        extensionClasses.add(org.mora.cep.sidhdhiExtention.MadisBoundry.class);
 
         SiddhiConfiguration siddhiConfiguration = new SiddhiConfiguration();
         siddhiConfiguration.setSiddhiExtensions(extensionClasses);
@@ -29,7 +29,7 @@ public class CEPInitialize {
         siddhiManager.defineStream("define stream reflectStream (reflexMatrix string )  ");
         siddhiManager.defineStream("define stream boundaryStream ( filePath string, boundary string )  ");
         siddhiManager.defineStream("define stream WeatherStream (stationId string, dateTime string, dewTemperature double, relativeHumidity double, seaPressure double, pressure double, temperature double, windDirection double, windSpeed double, latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double,temperature double) ");
+        siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double,temperature double, boundary string) ");
 
         return siddhiManager;
     }
