@@ -12,6 +12,11 @@ import java.util.stream.Stream;
 /**
  * Created by ruveni on 15/11/15.
  */
+
+/*
+    Madis Data Fields
+    stationId, date, Time, dewTemperature, relativeHumidity, seaPressure, stationPressure, airTemperature, windDirection, windSpeed, latitude, longitude
+ */
 public class MadisDataFeed  implements Runnable{
     private MadisDataBridge madisDataBridge;
     private SiddhiManager siddhiManager;
