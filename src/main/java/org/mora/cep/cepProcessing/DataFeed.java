@@ -29,6 +29,7 @@ public class DataFeed implements Runnable {
         dataBridgeClient=new DataBridgeClient(siddhiManager);
         //pass the file content to CEP for processing
         dataBridgeClient.SendDataToCEP(message.toString());
+
     }
 
     public void readFile(String location){
