@@ -70,5 +70,6 @@
     <orderEntry type="library" name="Maven: antlr:antlr:2.7.7" level="project" />
     <orderEntry type="library" name="Maven: org.wso2.orbit.org.opensaml:opensaml:2.6.4.wso2v1" level="project" />
     <orderEntry type="library" name="Maven: org.wso2.orbit.joda-time:joda-time:2.8.2.wso2v1" level="project" />
+    <orderEntry type="library" name="jgrib" level="project" />
   </component>
 </module>

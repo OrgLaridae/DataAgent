@@ -25,7 +25,7 @@ public class MadisDataFeed  implements Runnable{
         madisDataBridge=new MadisDataBridge(siddhiManager);
 
 
-        Path path = Paths.get("/home/ruveni/FYP/WRF-Data/chicago.csv");
+        Path path = Paths.get("/home/chamil/Documents/chicago.csv");
         try (Stream<String> lines = Files.lines(path)) {
             String[] lineArray = lines.collect(Collectors.toList()).toArray(new String[0]);
             for (int i = 0; i < lineArray.length; i++) {

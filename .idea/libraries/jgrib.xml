@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jgrib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../jgrib_beta7/lib/jgrib.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

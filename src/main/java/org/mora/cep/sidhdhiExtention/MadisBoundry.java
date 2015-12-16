@@ -15,44 +15,10 @@ import java.util.Date;
 
 @SiddhiExtension(namespace = "madis", function = "boundary")
 public class MadisBoundry extends FunctionExecutor {
-    final int MINUTE_GAP = 5;
+    final int MINUTE_GAP = 1;
     Attribute.Type returnType;
-
-    protected Object process(double lat, double lon, String timestamp) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-        Date benchMarkTime = null;
-        double minLat=0, minLon=0,maxLat=0, maxLon =0;
-        String boundry;
-
-        if(benchMarkTime== null){
-            benchMarkTime = getTimestamp(timestamp);
-            minLat = maxLat = lat;
-            minLon = maxLon = lon;
-
-        }
-        else if((getTimestamp(timestamp).getTime() - benchMarkTime.getTime()) > MINUTE_GAP*60*60){ // should change
-           benchMarkTime = getTimestamp(timestamp);
-            boundry = minLat + " " + maxLat + " " + minLon + " " + maxLon;
-            minLat = maxLat = lat;
-            minLon = maxLon = lon;
-            return boundry;
-        }
-        else{
-            if (lat > maxLat) {
-                maxLat = lat;
-            }
-            if (lat < minLat) {
-                minLat = lat;
-            }
-            if (lon > maxLon) {
-                maxLon = lon;
-            }
-            if (lon < minLon) {
-                minLon = lon;
-            }
-        }
-        return "";
-    }
+    Date benchMarkTime = null;
+    double minLat=0, minLon=0,maxLat=0, maxLon =0;
 
     private Date getTimestamp(String dateString){
 
@@ -79,8 +45,9 @@ public class MadisBoundry extends FunctionExecutor {
             double lon=Double.parseDouble(String.valueOf(((Object[]) o)[1]));
             String timestamp=String.valueOf(((Object[]) o)[2]);
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-            Date benchMarkTime = null;
-            double minLat=0, minLon=0,maxLat=0, maxLon =0;
+
+
+
             String boundry;
 
             if(benchMarkTime== null){
@@ -89,7 +56,8 @@ public class MadisBoundry extends FunctionExecutor {
                 minLon = maxLon = lon;
 
             }
-            else if((getTimestamp(timestamp).getTime() - benchMarkTime.getTime()) > MINUTE_GAP*60*60){ // should change
+
+            else if((getTimestamp(timestamp).getTime() - benchMarkTime.getTime()) > MINUTE_GAP*60*1000){ // should change
                 benchMarkTime = getTimestamp(timestamp);
                 boundry = minLat + " " + maxLat + " " + minLon + " " + maxLon;
                 minLat = maxLat = lat;
@@ -112,7 +80,7 @@ public class MadisBoundry extends FunctionExecutor {
             }
 
         }
-        return "";
+        return "test";
     }
 
     @Override
