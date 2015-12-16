@@ -18,7 +18,7 @@ public class GribhDecoder {
     public GribhDecoder(String path){
 
     try{
-        // Opening Grib File
+        // Opening GRIB File
         this.gribFile = new GribFile(path);
 
     } catch (FileNotFoundException noFileError) {
