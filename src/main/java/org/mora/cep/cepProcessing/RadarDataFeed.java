@@ -12,13 +12,13 @@ import java.util.stream.Stream;
 /**
  * Created by ruveni on 04/11/15.
  */
-public class DataFeed implements Runnable {
-    private DataBridgeClient dataBridgeClient=null;
+public class RadarDataFeed implements Runnable {
+    private RadarAlert dataBridgeClient=null;
     private StringBuilder message=null;
-    private String filePath="/home/ruveni/ekxv0000.txt";
+    private String filePath="/home/ruveni/Data/ekxv0000.txt";
     private SiddhiManager siddhiManager;
 
-    public DataFeed(SiddhiManager siddhiManager){
+    public RadarDataFeed(SiddhiManager siddhiManager){
         this.siddhiManager=siddhiManager;
     }
 
@@ -26,7 +26,7 @@ public class DataFeed implements Runnable {
     public void run() {
         //reads the input file and store the contents as a string
         readFile(filePath);
-        dataBridgeClient=new DataBridgeClient(siddhiManager);
+        dataBridgeClient=new RadarAlert(siddhiManager);
         //pass the file content to CEP for processing
         dataBridgeClient.SendDataToCEP(message.toString());
 
