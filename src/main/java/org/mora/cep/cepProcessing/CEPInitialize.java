@@ -1,5 +1,6 @@
 package org.mora.cep.cepProcessing;
 
+import org.mora.cep.sidhdhiExtention.WeatherBoundary;
 import org.wso2.siddhi.core.SiddhiManager;
 import org.wso2.siddhi.core.config.SiddhiConfiguration;
 
@@ -18,7 +19,7 @@ public class CEPInitialize {
         extensionClasses.add(org.mora.cep.sidhdhiExtention.RadarFilePath.class);
         extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearStation.class);
         extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearTimestamp.class);
-        extensionClasses.add(org.mora.cep.sidhdhiExtention.MadisBoundry.class);
+        extensionClasses.add(WeatherBoundary.class);
 
         SiddhiConfiguration siddhiConfiguration = new SiddhiConfiguration();
         siddhiConfiguration.setSiddhiExtensions(extensionClasses);
@@ -29,7 +30,8 @@ public class CEPInitialize {
         siddhiManager.defineStream("define stream reflectStream (reflexMatrix string )  ");
         siddhiManager.defineStream("define stream boundaryStream ( filePath string, boundary string )  ");
         siddhiManager.defineStream("define stream WeatherStream (stationId string, dateTime string, dewTemperature double, relativeHumidity double, seaPressure double, pressure double, temperature double, windDirection double, windSpeed double, latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double,temperature double, boundary string) ");
+        siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream DataBoundary (minLatitude double, maxLatitude double, minLongitude double, maxLongitude double, dataCount long) ");
 
         return siddhiManager;
     }
