@@ -32,6 +32,7 @@ public class CEPInitialize {
         siddhiManager.defineStream("define stream WeatherStream (stationId string, dateTime string, dewTemperature double, relativeHumidity double, seaPressure double, pressure double, temperature double, windDirection double, windSpeed double, latitude double, longitude double) ");
         siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double) ");
         siddhiManager.defineStream("define stream LiftedIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream TotalsIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
         siddhiManager.defineStream("define stream DataBoundary (minLatitude double, maxLatitude double, minLongitude double, maxLongitude double, dataCount long) ");
 
         return siddhiManager;
