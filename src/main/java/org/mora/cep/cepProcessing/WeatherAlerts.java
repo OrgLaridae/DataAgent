@@ -108,6 +108,37 @@ public class WeatherAlerts {
         });
     }
 
+    //Total Totals Index
+    //TT > 44 = possible thunderstorms, slight chance of severe TT > 50 = moderate chance of severe thunderstorms TT > 55 = strong chance of severe thunderstorms
+    //TT = Td850 + T850 - 2(T500) or (Td850 - T500) + (T850 - T500)
+    public void checkTotalsIndex(){
+        String checkIndex=siddhiManager.addQuery("from WeatherStream #window.unique(stationId) as A " +
+                "join WeatherStream #window.unique(stationId) as B " +
+                "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) and (A.dewTemp850 + A.temp850 - 2*A.temp500) > 44 " +
+                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into TotalsIndexStream ;");
+
+        siddhiManager.addCallback(checkIndex, new QueryCallback() {
+            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+                System.out.print("Totals Index : ");
+                EventPrinter.print(timeStamp, inEvents, removeEvents);
+            }
+        });
+    }
+
+    public void totalsIndexBoundary(){
+        String calBoundary=siddhiManager.addQuery("from TotalsIndexStream #window.timeBatch( "+TIME_GAP+" min ) "+
+                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
+                "insert into DataBoundary for all-events ; ");
+
+        siddhiManager.addCallback(calBoundary, new QueryCallback() {
+            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+                System.out.print("Lifted Index Boundary : ");
+                EventPrinter.print(inEvents);
+            }
+        });
+    }
+
     //radar data processing
     public void radarDataBoundary(){
         String queryReference = siddhiManager.addQuery("from reflectStream select file:getPath(reflexMatrix) as filePath, radar:boundary(reflexMatrix) as boundary insert into boundaryStream ;");
