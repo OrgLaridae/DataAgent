@@ -50,7 +50,7 @@ public class WeatherAlerts {
     }
 
     public void highWindAlert(){
-        String highWindDetect = siddhiManager.addQuery("from  WeatherStream[windSpeed >= "+THRESHOLD_WIND+"] #window.unique(stationId) as A " +
+        String highWindDetect = siddhiManager.addQuery("from WeatherStream[windSpeed >= "+THRESHOLD_WIND+"] #window.unique(stationId) as A " +
                 "join WeatherStream[windSpeed >= "+THRESHOLD_WIND+"] #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
                 "select A.stationId,A.dateTime,A.latitude,A.longitude " +
@@ -73,6 +73,36 @@ public class WeatherAlerts {
         siddhiManager.addCallback(calBoundary, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 System.out.print("Madis Boundary : ");
+                EventPrinter.print(inEvents);
+            }
+        });
+    }
+
+    //gets the Lifted Index and checks whether it is positive or negative
+    //If the value is negative, the probability of occuring a thunderstorm is greater
+    public void checkLiftedIndex(){
+        String checkIndex=siddhiManager.addQuery("from WeatherStream [liftedIndex<0] #window.unique(stationId) as A " +
+                "join WeatherStream[liftedIndex<0] #window.unique(stationId) as B " +
+                "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
+                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into LiftedIndexStream ;");
+
+        siddhiManager.addCallback(checkIndex, new QueryCallback() {
+            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+                System.out.print("Lifted Index : ");
+                EventPrinter.print(timeStamp, inEvents, removeEvents);
+            }
+        });
+    }
+
+    public void liftedIndexBoundary(){
+        String calBoundary=siddhiManager.addQuery("from LiftedIndexStream #window.timeBatch( "+TIME_GAP+" min ) "+
+                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
+                "insert into DataBoundary for all-events ; ");
+
+        siddhiManager.addCallback(calBoundary, new QueryCallback() {
+            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+                System.out.print("Lifted Index Boundary : ");
                 EventPrinter.print(inEvents);
             }
         });
