@@ -14,11 +14,11 @@ import java.util.List;
 /**
  * Created by chamil on 9/3/15.
  */
-public class DataBridgeClient {
+public class RadarAlert {
     private SiddhiManager siddhiManager;
     private InputHandler inputHandler;
 
-    public DataBridgeClient(SiddhiManager siddhiManager){
+    public RadarAlert(SiddhiManager siddhiManager){
         this.siddhiManager=siddhiManager;
         String queryReference = siddhiManager.addQuery("from reflectStream select file:getPath(reflexMatrix) as filePath, radar:boundary(reflexMatrix) as boundary insert into boundaryStream ;");
 

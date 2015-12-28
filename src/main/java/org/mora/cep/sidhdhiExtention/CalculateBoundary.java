@@ -18,7 +18,7 @@ public class CalculateBoundary extends FunctionExecutor{
     private static final int MATRIX_SIZE = 240;
     double[][] matrix;
     int minRow = 240, maxRow = 0, minCol = 240, maxCol = 0;
-    private static final int THRESHOLD = 1;
+    private static final int THRESHOLD = 40;
     Attribute.Type returnType;
     private static final double ALPHA = 0.5;
     private static final double BETA = -32;
@@ -45,11 +45,12 @@ public class CalculateBoundary extends FunctionExecutor{
 
             for (int i = 0; i < MATRIX_SIZE; i++) {
                 for (int j = 0; j < MATRIX_SIZE; j++) {
-                    //converts to z values
+                    //in dbZ
                     double radarData = Double.parseDouble(inputValues[k]);
                     radarData = (radarData == 255.0) ? 0 : radarData;
-                    radarData = (ALPHA * radarData) + BETA;
-                    radarData = Math.pow(10, (radarData / 10));
+                    //converts to z values
+//                    radarData = (ALPHA * radarData) + BETA;
+//                    radarData = Math.pow(10, (radarData / 10));
                     //calculates the boundary
                     if (radarData > THRESHOLD) {
                         if (i > maxRow) {
