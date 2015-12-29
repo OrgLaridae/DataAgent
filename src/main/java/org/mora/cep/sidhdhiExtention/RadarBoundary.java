@@ -13,12 +13,12 @@ import org.wso2.siddhi.query.api.extension.annotation.SiddhiExtension;
  */
 
 @SiddhiExtension(namespace = "radar", function = "boundary")
-public class CalculateBoundary extends FunctionExecutor{
-    Logger log = Logger.getLogger(CalculateBoundary.class);
+public class RadarBoundary extends FunctionExecutor{
+    Logger log = Logger.getLogger(RadarBoundary.class);
     private static final int MATRIX_SIZE = 240;
     double[][] matrix;
     int minRow = 240, maxRow = 0, minCol = 240, maxCol = 0;
-    private static final int THRESHOLD = 40;
+    private static final int THRESHOLD = 40; //in dBZ
     Attribute.Type returnType;
     private static final double ALPHA = 0.5;
     private static final double BETA = -32;
