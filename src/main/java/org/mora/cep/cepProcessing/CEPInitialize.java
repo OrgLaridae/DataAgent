@@ -1,5 +1,6 @@
 package org.mora.cep.cepProcessing;
 
+import org.mora.cep.sidhdhiExtention.RadarBoundary;
 import org.mora.cep.sidhdhiExtention.WeatherBoundary;
 import org.wso2.siddhi.core.SiddhiManager;
 import org.wso2.siddhi.core.config.SiddhiConfiguration;
@@ -15,7 +16,7 @@ public class CEPInitialize {
 
         //configuration to add siddhi extension
         List extensionClasses = new ArrayList();
-        extensionClasses.add(org.mora.cep.sidhdhiExtention.CalculateBoundary.class);
+        extensionClasses.add(RadarBoundary.class);
         extensionClasses.add(org.mora.cep.sidhdhiExtention.RadarFilePath.class);
         extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearStation.class);
         extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearTimestamp.class);
@@ -33,6 +34,11 @@ public class CEPInitialize {
         siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double) ");
         siddhiManager.defineStream("define stream LiftedIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
         siddhiManager.defineStream("define stream TotalsIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream KIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream HumidityIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream HelicityStream (stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream InhibitionStream (stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream PrecipitableWaterStream (stationId string, dateTime string,latitude double, longitude double) ");
         siddhiManager.defineStream("define stream DataBoundary (minLatitude double, maxLatitude double, minLongitude double, maxLongitude double, dataCount long) ");
 
         return siddhiManager;
