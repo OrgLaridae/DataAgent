@@ -1,4 +1,6 @@
-package org.mora.cep.cepProcessing;
+package org.mora.cep.dataFeed;
+
+import org.mora.cep.cepProcessing.WeatherAlerts;
 
 import java.io.IOException;
 import java.nio.file.Files;
