@@ -8,7 +8,6 @@ import org.wso2.siddhi.core.query.output.callback.QueryCallback;
 import org.wso2.siddhi.core.stream.input.InputHandler;
 import org.wso2.siddhi.core.util.EventPrinter;
 
-import java.awt.event.WindowEvent;
 
 /**
  * Created by ruveni on 15/11/15.
@@ -49,6 +48,7 @@ public class WeatherAlerts {
         checkHelicity();
         checkInhibition();
         sendFilteredWeatherData();
+        calculateCommonBoundary(); //comment if not wanted to send the boundary calculated
         radarDataBoundary();
     }
 
@@ -109,8 +109,8 @@ public class WeatherAlerts {
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-//                System.out.print("Lifted Index : ");
-//                EventPrinter.print(timeStamp, inEvents, removeEvents);
+                System.out.print("Lifted Index : ");
+                EventPrinter.print(timeStamp, inEvents, removeEvents);
             }
         });
     }
@@ -187,8 +187,8 @@ public class WeatherAlerts {
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-//                System.out.print("Helicity Index : ");
-//                EventPrinter.print(timeStamp, inEvents, removeEvents);
+                System.out.print("Helicity Index : ");
+                EventPrinter.print(timeStamp, inEvents, removeEvents);
             }
         });
     }
@@ -208,8 +208,8 @@ public class WeatherAlerts {
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-//                System.out.print("Convective Inhibition : ");
-//                EventPrinter.print(timeStamp, inEvents, removeEvents);
+                System.out.print("Convective Inhibition : ");
+                EventPrinter.print(timeStamp, inEvents, removeEvents);
             }
         });
     }
@@ -285,6 +285,7 @@ public class WeatherAlerts {
         });
     }
 
+    //sends the data filtered as a string composed with location coordinates
     public void sendFilteredWeatherData() {
         String calBoundary = siddhiManager.addQuery("from FilteredDataStream #window.timeBatch( "+TIME_GAP+" min ) " +
                 "select weather:coordinates(latitude,longitude) as coordinates " +
