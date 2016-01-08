@@ -1,5 +1,6 @@
 package org.mora.cep.cepProcessing;
 
+import org.mora.cep.sidhdhiExtention.LocationCoordinates;
 import org.mora.cep.sidhdhiExtention.RadarBoundary;
 import org.mora.cep.sidhdhiExtention.WeatherBoundary;
 import org.wso2.siddhi.core.SiddhiManager;
@@ -12,7 +13,7 @@ import java.util.List;
  * Created by ruveni on 08/12/15.
  */
 public class CEPInitialize {
-    public SiddhiManager CEPInit(){
+    public SiddhiManager CEPInit() {
 
         //configuration to add siddhi extension
         List extensionClasses = new ArrayList();
@@ -21,6 +22,7 @@ public class CEPInitialize {
         extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearStation.class);
         extensionClasses.add(org.mora.cep.sidhdhiExtention.IsNearTimestamp.class);
         extensionClasses.add(WeatherBoundary.class);
+        extensionClasses.add(LocationCoordinates.class);
 
         SiddhiConfiguration siddhiConfiguration = new SiddhiConfiguration();
         siddhiConfiguration.setSiddhiExtensions(extensionClasses);
@@ -30,10 +32,13 @@ public class CEPInitialize {
         //stream definitions
         siddhiManager.defineStream("define stream reflectStream (reflexMatrix string )  ");
         siddhiManager.defineStream("define stream boundaryStream ( filePath string, boundary string )  ");
-        siddhiManager.defineStream("define stream WeatherStream (stationId string, dateTime string, dewTemperature double, relativeHumidity double, seaPressure double, pressure double, temperature double, windDirection double, windSpeed double, latitude double, longitude double) ");
+        //siddhiManager.defineStream("define stream WeatherStream (stationId string, dateTime string, dewTemperature double, relativeHumidity double, seaPressure double, pressure double, temperature double, windDirection double, windSpeed double, latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream WeatherStream (stationId string, latitude double, longitude double, liftedIndex double, helicity double, inhibition double) ");
         siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream FilteredStream (streamId string, stationId string, dateTime string,latitude double, longitude double) ");
+        //siddhiManager.defineStream("define stream FilteredStream (streamId string, stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream FilteredDataStream (streamId string, stationId string, latitude double, longitude double) ");
         siddhiManager.defineStream("define stream DataBoundary (minLatitude double, maxLatitude double, minLongitude double, maxLongitude double, dataCount long) ");
+        siddhiManager.defineStream("define stream CheckBatch (coordinates string) ");
 
         return siddhiManager;
     }
