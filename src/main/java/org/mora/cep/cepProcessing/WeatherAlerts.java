@@ -100,26 +100,13 @@ public class WeatherAlerts {
         String checkIndex=siddhiManager.addQuery("from WeatherStream [liftedIndex<0] #window.unique(stationId) as A " +
                 "join WeatherStream[liftedIndex<0] #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
-                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
-                "insert into LiftedIndexStream ;");
+                "select 'A' as streamID, A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into FilteredStream ;");
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 System.out.print("Lifted Index : ");
                 EventPrinter.print(timeStamp, inEvents, removeEvents);
-            }
-        });
-    }
-
-    public void liftedIndexBoundary(){
-        String calBoundary=siddhiManager.addQuery("from LiftedIndexStream #window.timeBatch( "+TIME_GAP+" min ) "+
-                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
-                "insert into DataBoundary for all-events ; ");
-
-        siddhiManager.addCallback(calBoundary, new QueryCallback() {
-            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-                System.out.print("Lifted Index Boundary : ");
-                EventPrinter.print(inEvents);
             }
         });
     }
@@ -132,26 +119,13 @@ public class WeatherAlerts {
         String checkIndex=siddhiManager.addQuery("from WeatherStream #window.unique(stationId) as A " +
                 "join WeatherStream #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) and (A.dewTemp850 + A.temp850 - 2*A.temp500) > 44 " +
-                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
-                "insert into TotalsIndexStream ;");
+                "select 'B' as streamID, A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into FilteredStream ;");
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 System.out.print("Totals Index : ");
                 EventPrinter.print(timeStamp, inEvents, removeEvents);
-            }
-        });
-    }
-
-    public void totalsIndexBoundary(){
-        String calBoundary=siddhiManager.addQuery("from TotalsIndexStream #window.timeBatch( "+TIME_GAP+" min ) "+
-                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
-                "insert into DataBoundary for all-events ; ");
-
-        siddhiManager.addCallback(calBoundary, new QueryCallback() {
-            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-                System.out.print("Totals Index Boundary : ");
-                EventPrinter.print(inEvents);
             }
         });
     }
@@ -164,26 +138,13 @@ public class WeatherAlerts {
         String checkIndex=siddhiManager.addQuery("from WeatherStream #window.unique(stationId) as A " +
                 "join WeatherStream #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) and (A.temp850 - A.temp500 + A.dewTemp850 - (A.temp700 - A.dewTemp700)) > 25 " +
-                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
-                "insert into KIndexStream ;");
+                "select 'C' as streamID, A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into FilteredStream ;");
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 System.out.print("K Index : ");
                 EventPrinter.print(timeStamp, inEvents, removeEvents);
-            }
-        });
-    }
-
-    public void kIndexBoundary(){
-        String calBoundary=siddhiManager.addQuery("from KIndexStream #window.timeBatch( "+TIME_GAP+" min ) "+
-                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
-                "insert into DataBoundary for all-events ; ");
-
-        siddhiManager.addCallback(calBoundary, new QueryCallback() {
-            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-                System.out.print("K Index Boundary : ");
-                EventPrinter.print(inEvents);
             }
         });
     }
@@ -196,26 +157,13 @@ public class WeatherAlerts {
         String checkIndex=siddhiManager.addQuery("from WeatherStream #window.unique(stationId) as A " +
                 "join WeatherStream #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) and ((A.temp850 - A.dewTemp850) + (A.temp700 - A.dewTemp700) + (A.temp500 - A.dewTemp500)) < 30 " +
-                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
-                "insert into HumidityIndexStream ;");
+                "select 'D' as streamID, A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into FilteredStream ;");
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 System.out.print("K Index : ");
                 EventPrinter.print(timeStamp, inEvents, removeEvents);
-            }
-        });
-    }
-
-    public void humidityIndexBoundary(){
-        String calBoundary=siddhiManager.addQuery("from HumidityIndexStream #window.timeBatch( "+TIME_GAP+" min ) "+
-                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
-                "insert into DataBoundary for all-events ; ");
-
-        siddhiManager.addCallback(calBoundary, new QueryCallback() {
-            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-                System.out.print("K Index Boundary : ");
-                EventPrinter.print(inEvents);
             }
         });
     }
@@ -230,26 +178,13 @@ public class WeatherAlerts {
         String checkIndex=siddhiManager.addQuery("from WeatherStream [stormHelicity>150] #window.unique(stationId) as A " +
                 "join WeatherStream[stormHelicity>150] #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
-                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
-                "insert into HelicityStream ;");
+                "select 'E' as streamID, A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into FilteredStream ;");
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 System.out.print("Helicity Index : ");
                 EventPrinter.print(timeStamp, inEvents, removeEvents);
-            }
-        });
-    }
-
-    public void helicityBoundary(){
-        String calBoundary=siddhiManager.addQuery("from HelicityStream #window.timeBatch( "+TIME_GAP+" min ) "+
-                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
-                "insert into DataBoundary for all-events ; ");
-
-        siddhiManager.addCallback(calBoundary, new QueryCallback() {
-            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-                System.out.print("Helicity Boundary : ");
-                EventPrinter.print(inEvents);
             }
         });
     }
@@ -264,26 +199,13 @@ public class WeatherAlerts {
         String checkIndex=siddhiManager.addQuery("from WeatherStream [convectiveInhibition<(-15)] #window.unique(stationId) as A " +
                 "join WeatherStream[convectiveInhibition<(-15)] #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
-                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
-                "insert into InhibitionStream ;");
+                "select 'F' as streamID, A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into FilteredStream ;");
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 System.out.print("Convective Inhibition : ");
                 EventPrinter.print(timeStamp, inEvents, removeEvents);
-            }
-        });
-    }
-
-    public void inhibitionBoundary(){
-        String calBoundary=siddhiManager.addQuery("from InhibitionStream #window.timeBatch( "+TIME_GAP+" min ) "+
-                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
-                "insert into DataBoundary for all-events ; ");
-
-        siddhiManager.addCallback(calBoundary, new QueryCallback() {
-            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-                System.out.print("Convective Inhibition Boundary : ");
-                EventPrinter.print(inEvents);
             }
         });
     }
@@ -296,8 +218,8 @@ public class WeatherAlerts {
         String checkIndex=siddhiManager.addQuery("from WeatherStream [precipitableWater>16] #window.unique(stationId) as A " +
                 "join WeatherStream[precipitableWater>16] #window.unique(stationId) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) and A.stationId != B.stationId and madis:isNearTimestamp(A.dateTime,B.dateTime) " +
-                "select A.stationId,A.dateTime,A.latitude,A.longitude " +
-                "insert into PrecipitableWaterStream ;");
+                "select 'G' as streamID, A.stationId,A.dateTime,A.latitude,A.longitude " +
+                "insert into FilteredStream ;");
 
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
@@ -338,5 +260,19 @@ public class WeatherAlerts {
         }catch (Exception e){
 
         }
+    }
+
+    //calculate the common boundary
+    public void calculateCommonBoundary(){
+        String calBoundary=siddhiManager.addQuery("from FilteredStream #window.unique(streamID) "+
+                "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount "+
+                "insert into DataBoundary for all-events ; ");
+
+        siddhiManager.addCallback(calBoundary, new QueryCallback() {
+            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+                System.out.print("Resulting Boundary : ");
+                EventPrinter.print(inEvents);
+            }
+        });
     }
 }

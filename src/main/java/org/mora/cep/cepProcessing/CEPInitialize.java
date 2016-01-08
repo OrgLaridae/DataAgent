@@ -32,13 +32,7 @@ public class CEPInitialize {
         siddhiManager.defineStream("define stream boundaryStream ( filePath string, boundary string )  ");
         siddhiManager.defineStream("define stream WeatherStream (stationId string, dateTime string, dewTemperature double, relativeHumidity double, seaPressure double, pressure double, temperature double, windDirection double, windSpeed double, latitude double, longitude double) ");
         siddhiManager.defineStream("define stream FilterStream (stationId string, dateTime string,latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream LiftedIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream TotalsIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream KIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream HumidityIndexStream (stationId string, dateTime string,latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream HelicityStream (stationId string, dateTime string,latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream InhibitionStream (stationId string, dateTime string,latitude double, longitude double) ");
-        siddhiManager.defineStream("define stream PrecipitableWaterStream (stationId string, dateTime string,latitude double, longitude double) ");
+        siddhiManager.defineStream("define stream FilteredStream (streamId string, stationId string, dateTime string,latitude double, longitude double) ");
         siddhiManager.defineStream("define stream DataBoundary (minLatitude double, maxLatitude double, minLongitude double, maxLongitude double, dataCount long) ");
 
         return siddhiManager;
