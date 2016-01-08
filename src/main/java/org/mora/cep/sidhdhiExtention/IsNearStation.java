@@ -16,7 +16,7 @@ import org.wso2.siddhi.query.api.extension.annotation.SiddhiExtension;
 @SiddhiExtension(namespace = "madis", function = "isNearStation")
 public class IsNearStation extends FunctionExecutor {
     Attribute.Type returnType;
-    private static final double DISTANCE_THRESHOLD = 100;
+    private static final double DISTANCE_THRESHOLD = 35;
     private static final double EARTH_RADIUS = 6371;//in kilometers
     private double latA = 0, lonA = 0, latB = 0, lonB = 0, dLat = 0, dLng = 0, a = 0, c = 0, dist = 0;
 
@@ -46,7 +46,7 @@ public class IsNearStation extends FunctionExecutor {
             //calculates the actual distance
             a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(latA)) * Math.cos(Math.toRadians(latB)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
             c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            dist = (double) (EARTH_RADIUS * c) * 1000;
+            dist = (double) (EARTH_RADIUS * c);
 
             if (dist < DISTANCE_THRESHOLD) {
                 isNear = true;
