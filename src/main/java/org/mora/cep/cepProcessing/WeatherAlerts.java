@@ -281,6 +281,7 @@ public class WeatherAlerts {
                 String data = inEvents[k - 1].getData(0).toString();
                 BoundaryEvent event = new BoundaryEvent(this, data);
                 //add the code to notify the event lister
+                
             }
         });
     }
