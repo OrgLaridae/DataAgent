@@ -17,7 +17,7 @@ public class RunScript {
         try {
             iExitValue = oDefaultExecutor.execute(oCmdLine);
         } catch (ExecuteException e) {
-            // TODO Auto-generated catch block
+
             System.err.println("Execution failed.");
             e.printStackTrace();
         } catch (IOException e) {
