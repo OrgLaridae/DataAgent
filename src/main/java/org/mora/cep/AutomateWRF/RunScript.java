@@ -6,8 +6,8 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 
 public class RunScript {
-    int iExitValue;
-    String sCommandString;
+    private int iExitValue;
+    private String sCommandString;
 
     public void runScript(String command){
         sCommandString = command;
@@ -30,5 +30,15 @@ public class RunScript {
     public static void main(String args[]){
         RunScript runScript = new RunScript();
         runScript.runScript("sh /home/ruveni/IdeaProjects/DataAgent/src/main/java/org/mora/cep/AutomateWRF/autoauto.sh");
+    }
+
+    //changes the namelist.wps property file according to the parameters set
+    public void changeNamelistWPS(){
+
+    }
+
+    //changes the namelist.input file according to the parameters set
+    public void changeNamelipsInput(){
+
     }
 }

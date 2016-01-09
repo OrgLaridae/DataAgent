@@ -9,6 +9,7 @@
 #2
 #END
 
+START=$(date +%s);
 
 #set paths to following directories
 WRF_PATH="/home/ruveni/WRF/AutomatedScripts/WRFV3";

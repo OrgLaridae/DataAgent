@@ -9,6 +9,8 @@
 #2
 #END
 
+START=$(date +%s);
+
 #set paths to following directories
 WRF_PATH="/home/ruveni/WRF/AutomatedScripts/WRFV3";
 WPS_PATH="/home/ruveni/WRF/AutomatedScripts/WPS";
@@ -27,3 +29,11 @@ echo "configuring WRF model...";
 ./configure;
 echo "compiling WRF model for real data case...";
 ./compile em_real;
+
+END=$(date +%s);
+DIFF=$(( $END - $START ));
+
+echo "";
+echo "WRF model compiled successfully";
+echo "runtime = $DIFF seconds";
+echo "";
