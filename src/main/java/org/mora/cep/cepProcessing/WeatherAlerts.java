@@ -277,9 +277,11 @@ public class WeatherAlerts {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 int k = inEvents.length;
                 System.out.print("Resulting Boundary : ");
-                System.out.println(inEvents[k - 1].getData(0));
-                String data = inEvents[k - 1].getData(0).toString();
-                BoundaryEvent event = new BoundaryEvent(this, data);
+                //format minLat maxLat minLon maxLon
+                //Eg Resulting Boundary : 53.915516 59.833235 -148.537948 -54.56872
+                String output=inEvents[k - 1].getData(0)+" "+inEvents[k - 1].getData(1)+" "+inEvents[k - 1].getData(2)+" "+inEvents[k - 1].getData(3);
+                System.out.println(inEvents[k - 1].getData(0)+" "+inEvents[k - 1].getData(1)+" "+inEvents[k - 1].getData(2)+" "+inEvents[k - 1].getData(3));
+                BoundaryEvent event = new BoundaryEvent(this, output);
                 //add the code to notify the event lister
                 
             }
