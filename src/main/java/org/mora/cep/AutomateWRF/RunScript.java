@@ -79,19 +79,19 @@ public class RunScript {
             //changes the parameters
             for (int i = 0; i < namelistArray.length; i++) {
                 if (namelistArray[i].contains("start_date")) {
-                    namelistArray[i] = "start_date = " + startDate + ",";
+                    namelistArray[i] = " start_date = " + startDate + ",";
                 } else if (namelistArray[i].contains("end_date")) {
-                    namelistArray[i] = "end_date = " + endDate + ",";
+                    namelistArray[i] = " end_date = " + endDate + ",";
                 } else if (namelistArray[i].contains("max_dom")) {
-                    namelistArray[i] = "max_dom = "+maxDom+",";
+                    namelistArray[i] = " max_dom = "+maxDom+",";
                 } else if (namelistArray[i].contains("interval_seconds")) {
-                    namelistArray[i] = "interval_seconds = "+intervalSeconds+",";
+                    namelistArray[i] = " interval_seconds = "+intervalSeconds+",";
                 } else if (namelistArray[i].contains("e_we")) {
-                    namelistArray[i] = "e_we              =  "+e_we+",";
+                    namelistArray[i] = " e_we              =  "+e_we+",";
                 } else if (namelistArray[i].contains("e_sn")) {
-                    namelistArray[i] = "e_sn              =  "+e_sn+",";
+                    namelistArray[i] = " e_sn              =  "+e_sn+",";
                 } else if (namelistArray[i].contains("geog_data_path")) {
-                    namelistArray[i] = "geog_data_path = '"+geog_data_path+"',";
+                    namelistArray[i] = " geog_data_path = '"+geog_data_path+"',";
                 }
                 //writes the data to the file
                 fw.write(namelistArray[i] + "\n");
