@@ -4,7 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -122,7 +121,7 @@ public class RunScript {
                 } else if(namelistArray[i].contains("run_days")){
                     namelistArray[i] = "run_days                            = "+runDays+",";
                 }else if(namelistArray[i].contains("run_hours")){
-                    namelistArray[i] = "run_days                            = "+runHours+",";
+                    namelistArray[i] = "run_hours                            = "+runHours+",";
                 }else if(namelistArray[i].contains("start_year")){
                     namelistArray[i] = "start_year                            = "+startYear+",";
                 }else if(namelistArray[i].contains("start_month")){
