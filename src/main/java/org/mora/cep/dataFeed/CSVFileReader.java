@@ -1,5 +1,6 @@
 package org.mora.cep.dataFeed;
 
+import org.mora.cep.cepProcessing.CEPEnvironment;
 import org.mora.cep.cepProcessing.WeatherAlerts;
 
 import java.io.IOException;
@@ -24,11 +25,11 @@ public class CSVFileReader implements Runnable{
         String[] liftedData=null,helicityData=null,inhibitData=null;
 
         //paths to the csv files
-        Path liftedPath = Paths.get("/home/ruveni/IdeaProjects/DataAgent/src/main/java/org/mora/cep/csvFiles/Best(4layer)liftedindex.csv");
-        Path helicityPath = Paths.get("/home/ruveni/IdeaProjects/DataAgent/src/main/java/org/mora/cep/csvFiles/stormrelativehelicity.csv");
-        Path inhibitPath = Paths.get("/home/ruveni/IdeaProjects/DataAgent/src/main/java/org/mora/cep/csvFiles/convectiveInhibition.csv");
+        Path liftedPath = Paths.get(CEPEnvironment.LIFTED_INDEX_FILE_PATH);
+        Path helicityPath = Paths.get(CEPEnvironment.HELICITY_INDEX_FILE_PATH);
+        Path inhibitPath = Paths.get(CEPEnvironment.CONVECTIVE_INHIBITION_FILE_PATH);
 
-        //reads the csv data files
+        //reads the csv data file
         try{
             Stream<String> liftedLines = Files.lines(liftedPath);
             Stream<String> helicityLines = Files.lines(helicityPath);
@@ -47,8 +48,6 @@ public class CSVFileReader implements Runnable{
                 //System.out.println(liftedData[2]+" "+liftedData[3]+" ");
                 weatherAlert.SendDataToCEP(liftedData[2]+":"+liftedData[3],Double.parseDouble(liftedData[2]),Double.parseDouble(liftedData[3]),Double.parseDouble(liftedData[4]),Double.parseDouble(helicityData[4]),Double.parseDouble(inhibitData[4]));
             }
-            System.out.println("done");
-
         } catch (IOException ex) {
 
         }
