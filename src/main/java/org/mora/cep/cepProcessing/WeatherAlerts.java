@@ -28,18 +28,15 @@ import org.wso2.siddhi.core.stream.input.InputHandler;
 public class WeatherAlerts {
     private SiddhiManager siddhiManager;
     private InputHandler madisInputHandler;
-    private InputHandler radarInputHandler;
 
     public WeatherAlerts(SiddhiManager siddhiManager) {
         this.siddhiManager = siddhiManager;
         madisInputHandler = siddhiManager.getInputHandler("WeatherStream");
-//        radarInputHandler = siddhiManager.getInputHandler("reflectStream");
         checkLiftedIndex();
-        //checkHelicity();
+        checkHelicity();
         checkInhibition();
         sendFilteredWeatherData();
-        calculateCommonBoundary(); //comment if not wanted to send the boundary calculated
-//        radarDataBoundary();
+        calculateCommonBoundary();
     }
 
     public void SendDataToCEP(String stationId, double latitude, double longitude, double liftedIndex, double helicity, double inhibition) {
