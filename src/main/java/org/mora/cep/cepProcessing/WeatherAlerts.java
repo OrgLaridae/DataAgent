@@ -230,12 +230,8 @@ public class WeatherAlerts {
 
         siddhiManager.addCallback(calBoundary, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-                int k = inEvents.length;
-                String data = inEvents[k - 1].getData(0).toString();
-                AlertEvent event = new AlertEvent(this, data);
+                AlertEvent event = new AlertEvent(this, CEPEnvironment.COORDINATE_FILE_PATH);
                 //add the code to notify the event lister
-                System.out.println("Data File : "+data);
-
             }
         });
     }
