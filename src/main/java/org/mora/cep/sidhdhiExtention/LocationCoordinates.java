@@ -9,9 +9,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 /**
  * Created by ruveni on 1/8/16.
@@ -23,10 +20,11 @@ public class LocationCoordinates extends FunctionExecutor {
     private StringBuilder builder;
     private static final int TIME_GAP=1;//in minutes
     private String filePath="/home/ruveni/Data/Test.txt";
+    File file=new File(filePath);
 
     @Override
     public void init(Attribute.Type[] types, SiddhiContext siddhiContext) {
-        //sets the start time
+        //sets the start tim
         activatedAt=System.currentTimeMillis();
         returnType= Attribute.Type.STRING;
         builder=new StringBuilder();
@@ -43,12 +41,10 @@ public class LocationCoordinates extends FunctionExecutor {
             if((System.currentTimeMillis()-activatedAt)>=(TIME_GAP*60*1000)){
                 BufferedWriter bwr = null;
                 try {
-                    bwr = new BufferedWriter(new FileWriter(new File(filePath)));
-                    //write contents of StringBuffer to a file
+                    bwr = new BufferedWriter(new FileWriter(file));
+                    //write contents of StringBuilder to a file
                     bwr.write(builder.toString());
-                    //flush the stream
                     bwr.flush();
-                    //close the stream
                     bwr.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -60,7 +56,7 @@ public class LocationCoordinates extends FunctionExecutor {
             }
 
             //locationCoord=locationCoord+lat+":"+lon+",";
-            builder.append(lat+":"+lon+",");
+            builder.append(lat+":"+lon+"\n");
         }
 
         //returns the calculated boundary
