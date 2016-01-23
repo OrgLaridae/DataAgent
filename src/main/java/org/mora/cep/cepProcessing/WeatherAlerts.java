@@ -2,10 +2,13 @@ package org.mora.cep.cepProcessing;
 
 import org.mora.cep.customEvents.AlertEvent;
 import org.mora.cep.customEvents.BoundaryEvent;
+import org.mora.cep.customEvents.Location;
 import org.wso2.siddhi.core.SiddhiManager;
 import org.wso2.siddhi.core.event.Event;
 import org.wso2.siddhi.core.query.output.callback.QueryCallback;
 import org.wso2.siddhi.core.stream.input.InputHandler;
+
+import java.util.ArrayList;
 
 
 /**
@@ -28,14 +31,19 @@ import org.wso2.siddhi.core.stream.input.InputHandler;
 public class WeatherAlerts {
     private SiddhiManager siddhiManager;
     private InputHandler madisInputHandler;
+    private ArrayList<Location> coordinates;
+    private StringBuilder coordString;
+
 
     public WeatherAlerts(SiddhiManager siddhiManager) {
         this.siddhiManager = siddhiManager;
+        coordinates=new ArrayList<>();
+        coordString=new StringBuilder();
         madisInputHandler = siddhiManager.getInputHandler("WeatherStream");
         checkLiftedIndex();
         checkHelicity();
         checkInhibition();
-        sendFilteredWeatherData();
+        //sendFilteredWeatherData();
         calculateCommonBoundary();
     }
 
@@ -47,13 +55,13 @@ public class WeatherAlerts {
         }
     }
 
-   //TEMPERATURE AND HUMIDITY RELATED INDICES
+    //TEMPERATURE AND HUMIDITY RELATED INDICES
 
     //gets the Lifted Index and checks whether it is positive or negative
     //If the value is negative, the probability of occuring a thunderstorm is greater
     public void checkLiftedIndex() {
-        String checkIndex = siddhiManager.addQuery("from WeatherStream [liftedIndex<"+CEPEnvironment.THRESHOLD_LIFTED_INDEX+"] #window.length(50) as A " +
-                "join WeatherStream[liftedIndex<"+CEPEnvironment.THRESHOLD_LIFTED_INDEX+"] #window.length(50) as B " +
+        String checkIndex = siddhiManager.addQuery("from WeatherStream [liftedIndex<" + CEPEnvironment.THRESHOLD_LIFTED_INDEX + "] #window.length(50) as A " +
+                "join WeatherStream[liftedIndex<" + CEPEnvironment.THRESHOLD_LIFTED_INDEX + "] #window.length(50) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) " +
                 "select 'A' as streamId, A.stationId, A.latitude, A.longitude " +
                 "insert into FilteredDataStream ;");
@@ -61,7 +69,13 @@ public class WeatherAlerts {
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 int k = inEvents.length;
-                System.out.println("Lifted Index : "+inEvents[k - 1].getData(1));
+                System.out.println("Lifted Index : " + inEvents[k - 1].getData(1));
+
+                //adds the filtered coordinate to the array list
+                if(coordString.indexOf(inEvents[k - 1].getData(2)+":"+inEvents[k - 1].getData(3))<0){
+                    coordString.append(inEvents[k - 1].getData(2)+":"+inEvents[k - 1].getData(3)+",");
+                    coordinates.add(new Location(String.valueOf(inEvents[k - 1].getData(2)),String.valueOf(inEvents[k - 1].getData(3))));
+                }
             }
         });
     }
@@ -73,8 +87,8 @@ public class WeatherAlerts {
     //threshold value is 150 m2/s2
 
     public void checkHelicity() {
-        String checkIndex = siddhiManager.addQuery("from WeatherStream [helicity>"+CEPEnvironment.THRESHOLD_HELICITY+"] #window.length(50) as A " +
-                "join WeatherStream[helicity>"+CEPEnvironment.THRESHOLD_HELICITY+"] #window.length(50) as B " +
+        String checkIndex = siddhiManager.addQuery("from WeatherStream [helicity>" + CEPEnvironment.THRESHOLD_HELICITY + "] #window.length(50) as A " +
+                "join WeatherStream[helicity>" + CEPEnvironment.THRESHOLD_HELICITY + "] #window.length(50) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) " +
                 "select 'E' as streamId, A.stationId,A.latitude,A.longitude " +
                 "insert into FilteredDataStream ;");
@@ -82,7 +96,13 @@ public class WeatherAlerts {
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 int k = inEvents.length;
-                System.out.println("Helicity Index : "+inEvents[k - 1].getData(1));
+                System.out.println("Helicity Index : " + inEvents[k - 1].getData(1));
+
+                //adds the filtered coordinate to the array list
+                if(coordString.indexOf(inEvents[k - 1].getData(2)+":"+inEvents[k - 1].getData(3))<0){
+                    coordString.append(inEvents[k - 1].getData(2)+":"+inEvents[k - 1].getData(3)+",");
+                    coordinates.add(new Location(String.valueOf(inEvents[k - 1].getData(2)),String.valueOf(inEvents[k - 1].getData(3))));
+                }
             }
         });
     }
@@ -94,8 +114,8 @@ public class WeatherAlerts {
     //threshold value is 15J/kg
 
     public void checkInhibition() {
-        String checkIndex = siddhiManager.addQuery("from WeatherStream [inhibition<("+CEPEnvironment.THRESHOLD_INHIBITION+")] #window.length(50) as A " +
-                "join WeatherStream[inhibition<("+CEPEnvironment.THRESHOLD_INHIBITION+")] #window.length(50) as B " +
+        String checkIndex = siddhiManager.addQuery("from WeatherStream [inhibition<(" + CEPEnvironment.THRESHOLD_INHIBITION + ")] #window.length(50) as A " +
+                "join WeatherStream[inhibition<(" + CEPEnvironment.THRESHOLD_INHIBITION + ")] #window.length(50) as B " +
                 "on madis:isNearStation(A.latitude,A.longitude,B.latitude,B.longitude) " +
                 "select 'F' as streamId, A.stationId,A.latitude,A.longitude " +
                 "insert into FilteredDataStream ;");
@@ -103,7 +123,13 @@ public class WeatherAlerts {
         siddhiManager.addCallback(checkIndex, new QueryCallback() {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 int k = inEvents.length;
-                System.out.println("Inhibition Index : "+inEvents[k - 1].getData(1));
+                System.out.println("Inhibition Index : " + inEvents[k - 1].getData(1));
+
+                //adds the filtered coordinate to the array list
+                if(coordString.indexOf(inEvents[k - 1].getData(2)+":"+inEvents[k - 1].getData(3))<0){
+                    coordString.append(inEvents[k - 1].getData(2)+":"+inEvents[k - 1].getData(3)+",");
+                    coordinates.add(new Location(String.valueOf(inEvents[k - 1].getData(2)),String.valueOf(inEvents[k - 1].getData(3))));
+                }
             }
         });
     }
@@ -198,9 +224,10 @@ public class WeatherAlerts {
         });
     }
 
+
     //calculate the common boundary
     public void calculateCommonBoundary() {
-        String calBoundary = siddhiManager.addQuery("from FilteredDataStream #window.timeBatch( "+CEPEnvironment.TIME_GAP+" min ) " +
+        String calBoundary = siddhiManager.addQuery("from FilteredDataStream #window.timeBatch( " + CEPEnvironment.TIME_GAP + " min ) " +
                 "select min(latitude) as minLatitude, max(latitude) as maxLatitude, min(longitude) as minLongitude, max(longitude) as maxLongitude, count(stationId) as dataCount " +
                 "insert into DataBoundary for all-events ; ");
 
@@ -210,28 +237,35 @@ public class WeatherAlerts {
                 System.out.print("Resulting Boundary : ");
                 //format minLat maxLat minLon maxLon
                 //Eg Resulting Boundary : 53.915516 59.833235 -148.537948 -54.56872
-                String output=inEvents[k - 1].getData(0)+" "+inEvents[k - 1].getData(1)+" "+inEvents[k - 1].getData(2)+" "+inEvents[k - 1].getData(3);
-                System.out.println(inEvents[k - 1].getData(0)+" "+inEvents[k - 1].getData(1)+" "+inEvents[k - 1].getData(2)+" "+inEvents[k - 1].getData(3));
+                String output = inEvents[k - 1].getData(0) + " " + inEvents[k - 1].getData(1) + " " + inEvents[k - 1].getData(2) + " " + inEvents[k - 1].getData(3);
+                System.out.println(inEvents[k - 1].getData(0) + " " + inEvents[k - 1].getData(1) + " " + inEvents[k - 1].getData(2) + " " + inEvents[k - 1].getData(3));
                 BoundaryEvent event = new BoundaryEvent(this, output);
                 //add the code to notify the event lister
-                
+
+                //invokes the listener to detect the filtered coordinates
+                //listener.handelBoundaryEvent(event);
+                AlertEvent eventt = new AlertEvent(this, coordinates);
+                //listener.handleAlertEvent(eventt);
+
+                //resets the values
+                coordinates=new ArrayList<>();
+                coordString=new StringBuilder();
             }
         });
     }
 
     //sends the data filtered as a string composed with location coordinates
-    public void sendFilteredWeatherData() {
-        String calBoundary = siddhiManager.addQuery("from FilteredDataStream #window.timeBatch( "+CEPEnvironment.TIME_GAP+" min ) " +
-                "select weather:coordinates(latitude,longitude) as coordinates " +
-                "insert into CheckBatch for all-events ; ");
-
-        siddhiManager.addCallback(calBoundary, new QueryCallback() {
-            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
-                AlertEvent event = new AlertEvent(this, CEPEnvironment.COORDINATE_FILE_PATH);
-                //add the code to notify the event lister
-            }
-        });
-    }
-
+//    public void sendFilteredWeatherData() {
+//        String calBoundary = siddhiManager.addQuery("from FilteredDataStream #window.timeBatch( " + CEPEnvironment.TIME_GAP + " min ) " +
+//                "select weather:coordinates(latitude,longitude) as coordinates " +
+//                "insert into CheckBatch for all-events ; ");
+//
+//        siddhiManager.addCallback(calBoundary, new QueryCallback() {
+//            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+//                AlertEvent event = new AlertEvent(this, CEPEnvironment.COORDINATE_FILE_PATH);
+//                listener.handleAlertEvent(event);
+//            }
+//        });
+//    }
 
 }
