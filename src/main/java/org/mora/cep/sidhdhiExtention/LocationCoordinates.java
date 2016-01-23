@@ -53,8 +53,8 @@ public class LocationCoordinates extends FunctionExecutor {
                 activatedAt=System.currentTimeMillis();
             }
 
-            if(builder.indexOf(lat+":"+lon)<0){
-                builder.append(lat+":"+lon+"\n");
+            if(builder.indexOf(lat+","+lon)<0){
+                builder.append("new google.maps.LatLng("+lat+","+lon+"),\n");
             }
         }
 
